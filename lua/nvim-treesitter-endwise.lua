@@ -1,3 +1,5 @@
+local queries = require("nvim-treesitter.query")
+
 local M = {}
 
 function M.init()
@@ -7,7 +9,7 @@ function M.init()
             enable = false,
             disable = {},
             is_supported = function(lang)
-                return lang == 'ruby'
+                return queries.has_query_files(lang, 'endwise')
             end,
         }
     }
