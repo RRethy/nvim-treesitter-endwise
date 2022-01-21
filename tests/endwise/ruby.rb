@@ -295,3 +295,25 @@ test "do block with args", <<~END
 +  
 +end
 END
+
+test "sequence, do block", <<~END
+-foo.each do█
+-def foo
+-end
++foo.each do
++  
++end
++def foo
++end
+END
+
+test "sequence, do block with args", <<~END
+-foo.each do |bar, baz|█
+-def foo
+-end
++foo.each do |bar, baz|
++  
++end
++def foo
++end
+END

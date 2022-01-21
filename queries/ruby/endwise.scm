@@ -14,6 +14,7 @@
 ((ERROR ("while" @indent . (_) @cursor . "do"? @cursor)) (#endwise! "end"))
 ((ERROR ("until" @indent . (_) @cursor . "do"? @cursor)) (#endwise! "end"))
 ((ERROR ("for" @indent . (_) . (in . "in" . (_) @cursor) . "do"? @cursor)) (#endwise! "end"))
+((ERROR ("do" @cursor @indent . (block_parameters)? @cursor)) (#endwise! "end"))
 
 ;; TODO: if/else still doesn't work
 
