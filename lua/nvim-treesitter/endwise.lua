@@ -1,9 +1,9 @@
-local parsers = require("nvim-treesitter.parsers")
-local queries = require("nvim-treesitter.query")
-local ts_utils = require("nvim-treesitter.ts_utils")
+local parsers = require('nvim-treesitter.parsers')
+local queries = require('nvim-treesitter.query')
+local ts_utils = require('nvim-treesitter.ts_utils')
 
 local M = {}
-local indent_regex = vim.regex("\\v^\\s*\\zs\\S")
+local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
 
 local function point_in_range(row, col, start_range, end_range)
@@ -18,9 +18,9 @@ end
 
 local function tabstr()
     if vim.bo.expandtab then
-        return string.rep(" ", vim.fn.shiftwidth())
+        return string.rep(' ', vim.fn.shiftwidth())
     else
-        return "	"
+        return '	'
     end
 end
 
@@ -31,7 +31,7 @@ local function strip_leading_whitespace(line)
         local text = string.sub(line, indent_end + 1)
         return indentation, text
     else
-        return line, ""
+        return line, ''
     end
 end
 
@@ -81,7 +81,7 @@ local function endwise(bufnr)
         return
     end
 
-    local row, col = unpack(vim.fn.searchpos("\\S", "nbW"))
+    local row, col = unpack(vim.fn.searchpos('\\S', 'nbW'))
     row = row - 1
     col = col - 1
 
@@ -90,16 +90,16 @@ local function endwise(bufnr)
     if not root then
         return
     end
-    local query = queries.get_query(lang, "endwise")
+    local query = queries.get_query(lang, 'endwise')
     local range = {root:range()}
 
     for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1) do
         local end_text = metadata.endwise_end_text
         local indent_node, cursor_node
         for id, node in pairs(match) do
-            if query.captures[id] == "indent" then
+            if query.captures[id] == 'indent' then
                 indent_node = node
-            elseif query.captures[id] == "cursor" then
+            elseif query.captures[id] == 'cursor' then
                 cursor_node = node
             end
         end
@@ -115,19 +115,19 @@ local function endwise(bufnr)
     end
 end
 
-vim.treesitter.query.add_directive("endwise!", function(_, _, _, predicate, metadata)
+vim.treesitter.query.add_directive('endwise!', function(_, _, _, predicate, metadata)
     metadata.endwise_end_text = predicate[2]
 end)
 
 vim.on_key(function(key)
     if vim.fn.char2nr(key) ~= 13 then return end
-    if vim.fn.mode() ~= "i" then return end
+    if vim.fn.mode() ~= 'i' then return end
     local bufnr = vim.fn.bufnr()
     if not tracking[bufnr] then return end
     vim.schedule_wrap(function()
-        vim.cmd("doautocmd User PreNvimTreesitterEndwiseCR")
+        vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR')
         endwise(bufnr)
-        vim.cmd("doautocmd User PostNvimTreesitterEndwiseCR")
+        vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR')
     end)()
 end, nil)
 

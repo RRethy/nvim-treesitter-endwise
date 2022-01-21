@@ -1,1 +1,1 @@
-require("nvim-treesitter-endwise").init()
+require('nvim-treesitter-endwise').init()
