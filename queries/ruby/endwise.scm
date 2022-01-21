@@ -1,70 +1,12 @@
-(
-    [
-        (module)
-        (class)
-        (method)
-        (singleton_method)
-    ] @capture
-    (#annotate! "subtree")
-    (#endwise-end! "end")
-)
+((module name: (_) @cursor) @indent (#endwise! "end"))
+((class name: (_) @cursor superclass: (_)? @cursor) @indent (#endwise! "end"))
+((method name: (_) @cursor parameters: (_)? @cursor) @indent (#endwise! "end"))
+((singleton_method name: (_) @cursor parameters: (_)? @cursor) @indent (#endwise! "end"))
 
-
-(
-    (ERROR
-        (
-            "module" @indent
-            .
-            [(constant) (scope_resolution)] @tail
-        )
-    )
-    (#annotate! "sequence")
-    (#endwise-end! "end")
-)
-
-(
-    (ERROR
-        (
-            "class" @indent
-            .
-            [(constant) (scope_resolution)] @tail
-            .
-            (superclass)? @tail
-        )
-    )
-    (#annotate! "sequence")
-    (#endwise-end! "end")
-)
-
-(
-    (ERROR
-        (
-            "def" @indent
-            .
-            (identifier) @tail
-            .
-            (method_parameters)? @tail
-        )
-    )
-    (#annotate! "sequence")
-    (#endwise-end! "end")
-)
-
-(
-    (ERROR
-        (
-            "def" @indent
-            .
-            (identifier) "."
-            .
-            (identifier) @tail
-            .
-            (method_parameters)? @tail
-        )
-    )
-    (#annotate! "sequence")
-    (#endwise-end! "end")
-)
+((ERROR ("module" @indent . [(constant) (scope_resolution)] @cursor)) (#endwise! "end"))
+((ERROR ("class" @indent . [(constant) (scope_resolution)] @cursor . (superclass)? @cursor)) (#endwise! "end"))
+((ERROR ("def" @indent . (identifier) @cursor . (method_parameters)? @cursor)) (#endwise! "end"))
+((ERROR ("def" @indent . (identifier) "." . (identifier) @cursor . (method_parameters)? @cursor)) (#endwise! "end"))
 
 ;; TODO: if/else still doesn't work
 

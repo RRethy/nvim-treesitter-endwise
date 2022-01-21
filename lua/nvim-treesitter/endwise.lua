@@ -6,10 +6,14 @@ local M = {}
 local indent_regex = vim.regex("\\v^\\s*\\zs\\S")
 local tracking = {}
 
-local function in_range(row, col, start_range, end_range)
-    end_range = end_range or start_range
+local function point_in_range(row, col, start_range, end_range)
     return not (row < start_range[1] or row == start_range[1] and col < start_range[2]
         or row > end_range[3] or row == end_range[3] and col >= end_range[4])
+end
+
+local function range_in_range(r1, r2)
+    return (r1[1] > r2[1] or r1[1] == r2[1] and r1[2] >= r2[2])
+        and (r1[3] < r2[3] or r1[3] == r2[3] and r1[4] <= r2[4])
 end
 
 local function tabstr()
@@ -90,29 +94,20 @@ local function endwise(bufnr)
     local range = {root:range()}
 
     for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1) do
-        local end_text = metadata.endwise_end
+        local end_text = metadata.endwise_end_text
+        local indent_node, cursor_node
+        for id, node in pairs(match) do
+            if query.captures[id] == "indent" then
+                indent_node = node
+            elseif query.captures[id] == "cursor" then
+                cursor_node = node
+            end
+        end
 
-        if metadata.annotations == "subtree" then
-            local node = match[1]
-            local node_range = {node:range()}
-            if in_range(row, col, node_range) then
-                if lacks_end(node, end_text) then
-                    add_end_node(node_range, end_text)
-                    return
-                end
-            end
-        elseif metadata.annotations == "sequence" then
-            local indent_node, tail_node
-            for id, node in pairs(match) do
-                if query.captures[id] == "indent" then
-                    indent_node = node
-                elseif query.captures[id] == "tail" then
-                    tail_node = node
-                end
-            end
-            local indent_node_range = {indent_node:range()}
-            local tail_node_range = {tail_node:range()}
-            if in_range(row, col, indent_node_range, tail_node_range) then
+        local indent_node_range = {indent_node:range()}
+        local cursor_node_range = {cursor_node:range()}
+        if point_in_range(row, col, indent_node_range, cursor_node_range) then
+            if not range_in_range(cursor_node_range, indent_node_range) or lacks_end(indent_node, end_text) then
                 add_end_node(indent_node_range, end_text)
                 return
             end
@@ -120,12 +115,8 @@ local function endwise(bufnr)
     end
 end
 
-vim.treesitter.query.add_directive("annotate!", function(_, _, _, predicate, metadata)
-    metadata.annotations = predicate[2]
-end)
-
-vim.treesitter.query.add_directive("endwise-end!", function(_, _, _, predicate, metadata)
-    metadata.endwise_end = predicate[2]
+vim.treesitter.query.add_directive("endwise!", function(_, _, _, predicate, metadata)
+    metadata.endwise_end_text = predicate[2]
 end)
 
 vim.on_key(function(key)
