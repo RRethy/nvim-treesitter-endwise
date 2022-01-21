@@ -11,7 +11,7 @@ test "2 spaces works", <<~END
 -def foo
 -end
 +  module Foo
-+    █
++    
 +  end
 +def foo
 +end
@@ -30,7 +30,7 @@ test "4 spaces works", <<~END
 -def foo
 -end
 +    module Foo
-+        █
++        
 +    end
 +def foo
 +end
@@ -49,7 +49,7 @@ test "tabs works", <<~END
 -def foo
 -end
 +	module Foo
-+		█
++		
 +	end
 +def foo
 +end

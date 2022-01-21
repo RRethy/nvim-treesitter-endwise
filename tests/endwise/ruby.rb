@@ -12,7 +12,7 @@ test "outside of syntax tree works", <<~END
 -
 -"foobar"
 +
-+█
++
 +
 +"foobar"
 END
@@ -20,7 +20,7 @@ END
 test "normal cr works", <<~END
 -"foobar"█
 +"foobar"
-+█
++
 END
 
 test "sequence, indentation is kept", <<~END
@@ -28,7 +28,7 @@ test "sequence, indentation is kept", <<~END
 -def foo
 -end
 +  module Foo
-+    █
++    
 +  end
 +def foo
 +end
@@ -39,7 +39,7 @@ test "sequence, tailing text is kept with indentation", <<~END
 -def foo
 -end
 +  module Foo
-+    █bar
++    bar
 +  end
 +def foo
 +end
@@ -50,7 +50,7 @@ test "sequence, tailing text is kept with indentation but leading whitespace is 
 -def foo
 -end
 +  module Foo
-+    █bar
++    bar
 +  end
 +def foo
 +end
@@ -61,7 +61,7 @@ test "sequence, unindented text indents newline", <<~END
 -def foo
 -end
 +module Foo
-+  █
++  
 +end
 +def foo
 +end
@@ -78,7 +78,7 @@ test "sequence, we search back to closest non-whitespace", <<~END
 +module Foo
 +
 +
-+  █
++  
 +end
 +def foo
 +end
@@ -87,21 +87,21 @@ END
 test "subtree, basic example works", <<~END
 -module Foo█
 +module Foo
-+  █
++  
 +end
 END
 
 test "subtree", <<~END
 -module Foo█bar
 +module Foo
-+  █bar
++  bar
 +end
 END
 
 test "subtree, trailing text works as expected", <<~END
 -module Foo█ bar
 +module Foo
-+  █bar
++  bar
 +end
 END
 
@@ -111,7 +111,7 @@ test "subtree, realizes end belongs to parent", <<~END
 -end
 +module Foo
 +  def foo
-+    █
++    
 +  end
 +end
 END
@@ -120,35 +120,35 @@ test "valid syntax is no-op", <<~END
 -module Foo█
 -end
 +module Foo
-+  █
++
 +end
 END
 
 test "subtree, module works", <<~END
 -module Foo█
 +module Foo
-+  █
++  
 +end
 END
 
 test "subtree, class works", <<~END
 -module Foo█
 +module Foo
-+  █
++  
 +end
 END
 
 test "subtree, method works", <<~END
 -def foo█
 +def foo
-+  █
++  
 +end
 END
 
 test "subtree, singleton_method works", <<~END
 -def foo.bar█
 +def foo.bar
-+  █
++  
 +end
 END
 
@@ -157,7 +157,7 @@ test "sequence, module works", <<~END
 -def foo
 -end
 +module Foo
-+  █
++  
 +end
 +def foo
 +end
@@ -168,7 +168,7 @@ test "sequence, class works", <<~END
 -def foo
 -end
 +module Foo
-+  █
++  
 +end
 +def foo
 +end
@@ -179,7 +179,7 @@ test "sequence, method works", <<~END
 -def foo
 -end
 +def foo
-+  █
++  
 +end
 +def foo
 +end
@@ -190,7 +190,7 @@ test "sequence, singleton_method works", <<~END
 -def foo
 -end
 +def foo.bar
-+  █
++  
 +end
 +def foo
 +end
@@ -199,14 +199,14 @@ END
 test "while <cond>", <<~END
 -while puts('hello')█
 +while puts('hello')
-+  █
++  
 +end
 END
 
 test "while <cond> do", <<~END
 -while puts('hello') do█
 +while puts('hello') do
-+  █
++  
 +end
 END
 
@@ -215,8 +215,44 @@ test "while <cond> do as sequence", <<~END
 -def foo
 -end
 +while puts('hello') do
-+  █
++  
 +end
 +def foo
++end
+END
+
+test "for loop without do", <<~END
+-for foo in 1..5█
++for foo in 1..5
++  
++end
+END
+
+test "for loop with do", <<~END
+-for foo in 1..5 do█
++for foo in 1..5 do
++  
++end
+END
+
+test "sequence, for loop without do", <<~END
+-for foo in 1..5█
+-def fun
+-end
++for foo in 1..5
++  
++end
++def fun
++end
+END
+
+test "sequence, for loop with do", <<~END
+-for foo in 1..5 do█
+-def fun
+-end
++for foo in 1..5 do
++  
++end
++def fun
 +end
 END

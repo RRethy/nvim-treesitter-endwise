@@ -3,12 +3,14 @@
 ((method name: (_) @cursor parameters: (_)? @cursor) @endable @indent (#endwise! "end"))
 ((singleton_method name: (_) @cursor parameters: (_)? @cursor) @endable @indent (#endwise! "end"))
 ((while condition: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
+((for value: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
 
 ((ERROR ("module" @indent . [(constant) (scope_resolution)] @cursor)) (#endwise! "end"))
 ((ERROR ("class" @indent . [(constant) (scope_resolution)] @cursor . (superclass)? @cursor)) (#endwise! "end"))
 ((ERROR ("def" @indent . (identifier) @cursor . (method_parameters)? @cursor)) (#endwise! "end"))
 ((ERROR ("def" @indent . (identifier) . "." . (identifier) @cursor . (method_parameters)? @cursor)) (#endwise! "end"))
 ((ERROR ("while" @indent . (_) @cursor . "do"? @cursor)) (#endwise! "end"))
+((ERROR ("for" @indent . (_) . (in . "in" . (_) @cursor) . "do"? @cursor)) (#endwise! "end"))
 
 ;; TODO: if/else still doesn't work
 

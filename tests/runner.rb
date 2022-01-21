@@ -2,6 +2,7 @@ require "tmpdir"
 
 ENDWISE_DIR = File.expand_path(File.join(__dir__, ".."))
 BASE_INIT_LUA = File.join(ENDWISE_DIR, "tests", "init.lua")
+CURSOR = "█"
 
 def config(opts)
   @config = {
@@ -10,10 +11,20 @@ def config(opts)
   }.merge(opts)
 end
 
-def test(description, testcase)
-  if @config.nil?
-    return
+def get_cursor_pos(lines)
+  row = nil
+  col = nil
+  lines.split("\n").each_with_index do |line, i|
+    if line.include?(CURSOR)
+      row = i
+      col = line.index(CURSOR)
+    end
   end
+  return row, col
+end
+
+def test(description, testcase)
+  return if ARGV.length > 0 && !description.include?(ARGV.first)
 
   input, expected = testcase.split("\n").partition { |line| line.start_with?('-') }
   input = "#{input.map { |line| line[1..] }.join("\n")}\n"
@@ -23,11 +34,14 @@ def test(description, testcase)
     overrides = File.join(dir, "overrides.lua")
     File.write(overrides, @config[:overrides])
     input_fname = File.join(dir, "input.#{@config[:extension]}")
+    crow, ccol = get_cursor_pos(input)
+    input = input.gsub(CURSOR, "")
     File.write(input_fname, input)
-    system("nvim", "-u", BASE_INIT_LUA, "-S", overrides, input_fname, "-c", "lua ExecuteCR()")
+    system("nvim", "-u", BASE_INIT_LUA, "+#{crow+1}", "-S", overrides, input_fname, "-c", "lua ExecuteCR(#{ccol-1})")
     got = File.read(input_fname)
     if got != expected
       puts "\e[31mFailed\e[0m: #{description}"
+      puts "\e[34mInput\e[0m:", input.gsub(/\t/, "<tab>")
       puts "\e[34mGot\e[0m:", got.gsub(/\t/, "<tab>")
       puts "\e[34mExpected:\e[0m", expected.gsub(/\t/, "<tab>")
     else
