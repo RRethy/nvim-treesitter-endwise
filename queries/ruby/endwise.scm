@@ -7,6 +7,7 @@
 ((for value: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
 ((do_block "do" @cursor parameters: (_)? @cursor) @endable @indent (#endwise! "end"))
 ((if condition: (_) @cursor) @endable @indent (#endwise! "end"))
+((begin "begin" @cursor . (rescue "rescue" @cursor exceptions: (_)? @cursor)? . (ensure "ensure" @cursor)?) @endable @indent (#endwise! "end"))
 
 ((ERROR ("module" @indent . [(constant) (scope_resolution)] @cursor)) (#endwise! "end"))
 ((ERROR ("class" @indent . [(constant) (scope_resolution)] @cursor . (superclass)? @cursor)) (#endwise! "end"))
@@ -17,3 +18,4 @@
 ((ERROR ("for" @indent . (_) . (in . "in" . (_) @cursor) . "do"? @cursor)) (#endwise! "end"))
 ((ERROR ("do" @cursor @indent . (block_parameters)? @cursor)) (#endwise! "end"))
 ((ERROR ("if" @indent . (_) @cursor . (then)? @cursor . ["elsif" (elsif (_))]? @cursor . ["else" (else)]? @cursor)) (#endwise! "end"))
+((ERROR ("begin" @cursor @indent . ["rescue" @cursor (rescue "rescue" @cursor exceptions: (_)? @cursor)]? . ["ensure" (ensure "ensure" @cursor)]?)) (#endwise! "end"))

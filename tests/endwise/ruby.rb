@@ -407,3 +407,39 @@ test "if stmt with elseif end is no-op", <<~END
 +
 +end
 END
+
+test "begin stmt", <<~END
+-begin█
++begin
++  
++end
+END
+
+test "begin stmt rescue", <<~END
+-begin
+-rescue█
++begin
++rescue
++  
++end
+END
+
+test "begin stmt rescue with exceptions", <<~END
+-begin
+-rescue String█
++begin
++rescue String
++  
++end
+END
+
+test "begin stmt rescue ensure", <<~END
+-begin
+-rescue String
+-ensure█
++begin
++rescue String
++ensure
++  
++end
+END
