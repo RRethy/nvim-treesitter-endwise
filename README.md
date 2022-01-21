@@ -22,7 +22,7 @@ Other languages are currently WIP.
 
 # Additional Language Support
 
-See [ruby/endwise.scm](https://github.com/RRethy/nvim-treesitter-endwise/blob/master/queries/ruby/endwise.scm) for the queries for Ruby, adding support for you language is just creating a Treesitter query.
+Please open an issue for new languages, I'll provide the required context for you to write the queries.
 
 # Credit
 
