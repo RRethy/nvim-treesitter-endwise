@@ -1,5 +1,4 @@
 config({
-  lang: "ruby",
   extension: "rb",
   overrides: <<~INIT_LUA
 vim.opt.expandtab = true
@@ -7,7 +6,7 @@ vim.opt.shiftwidth = 2
 INIT_LUA
 })
 
-test "outside of syntax tree works", <<~END
+test "ruby, outside of syntax tree works", <<~END
 -█
 -
 -"foobar"
@@ -17,13 +16,13 @@ test "outside of syntax tree works", <<~END
 +"foobar"
 END
 
-test "normal cr works", <<~END
+test "ruby, normal cr works", <<~END
 -"foobar"█
 +"foobar"
 +
 END
 
-test "sequence, indentation is kept", <<~END
+test "ruby, sequence, indentation is kept", <<~END
 -  module Foo█
 -def foo
 -end
@@ -34,7 +33,7 @@ test "sequence, indentation is kept", <<~END
 +end
 END
 
-test "sequence, tailing text is kept with indentation", <<~END
+test "ruby, sequence, tailing text is kept with indentation", <<~END
 -  module Foo█bar
 -def foo
 -end
@@ -45,7 +44,7 @@ test "sequence, tailing text is kept with indentation", <<~END
 +end
 END
 
-test "sequence, tailing text is kept with indentation but leading whitespace is stripped", <<~END
+test "ruby, sequence, tailing text is kept with indentation but leading whitespace is stripped", <<~END
 -  module Foo█ bar
 -def foo
 -end
@@ -56,7 +55,7 @@ test "sequence, tailing text is kept with indentation but leading whitespace is 
 +end
 END
 
-test "sequence, unindented text indents newline", <<~END
+test "ruby, sequence, unindented text indents newline", <<~END
 -module Foo█
 -def foo
 -end
@@ -69,7 +68,7 @@ END
 
 # I'm not sure if I want to keep this behaviour of searching up so many lines,
 # but for now I like it
-test "sequence, we search back to closest non-whitespace", <<~END
+test "ruby, sequence, we search back to closest non-whitespace", <<~END
 -module Foo
 -
 -█
@@ -84,28 +83,28 @@ test "sequence, we search back to closest non-whitespace", <<~END
 +end
 END
 
-test "subtree, basic example works", <<~END
+test "ruby, subtree, basic example works", <<~END
 -module Foo█
 +module Foo
 +  
 +end
 END
 
-test "subtree", <<~END
+test "ruby, subtree", <<~END
 -module Foo█bar
 +module Foo
 +  bar
 +end
 END
 
-test "subtree, trailing text works as expected", <<~END
+test "ruby, subtree, trailing text works as expected", <<~END
 -module Foo█ bar
 +module Foo
 +  bar
 +end
 END
 
-test "subtree, realizes end belongs to parent", <<~END
+test "ruby, subtree, realizes end belongs to parent", <<~END
 -module Foo
 -  def foo█
 -end
@@ -116,7 +115,7 @@ test "subtree, realizes end belongs to parent", <<~END
 +end
 END
 
-test "valid syntax is no-op", <<~END
+test "ruby, valid syntax is no-op", <<~END
 -module Foo█
 -end
 +module Foo
@@ -124,35 +123,35 @@ test "valid syntax is no-op", <<~END
 +end
 END
 
-test "subtree, module works", <<~END
+test "ruby, subtree, module works", <<~END
 -module Foo█
 +module Foo
 +  
 +end
 END
 
-test "subtree, class works", <<~END
+test "ruby, subtree, class works", <<~END
 -module Foo█
 +module Foo
 +  
 +end
 END
 
-test "subtree, method works", <<~END
+test "ruby, subtree, method works", <<~END
 -def foo█
 +def foo
 +  
 +end
 END
 
-test "subtree, singleton_method works", <<~END
+test "ruby, subtree, singleton_method works", <<~END
 -def foo.bar█
 +def foo.bar
 +  
 +end
 END
 
-test "sequence, module works", <<~END
+test "ruby, sequence, module works", <<~END
 -module Foo█
 -def foo
 -end
@@ -163,7 +162,7 @@ test "sequence, module works", <<~END
 +end
 END
 
-test "sequence, class works", <<~END
+test "ruby, sequence, class works", <<~END
 -module Foo█
 -def foo
 -end
@@ -174,7 +173,7 @@ test "sequence, class works", <<~END
 +end
 END
 
-test "sequence, method works", <<~END
+test "ruby, sequence, method works", <<~END
 -def foo█
 -def foo
 -end
@@ -185,7 +184,7 @@ test "sequence, method works", <<~END
 +end
 END
 
-test "sequence, singleton_method works", <<~END
+test "ruby, sequence, singleton_method works", <<~END
 -def foo.bar█
 -def foo
 -end
@@ -196,21 +195,21 @@ test "sequence, singleton_method works", <<~END
 +end
 END
 
-test "while <cond>", <<~END
+test "ruby, while <cond>", <<~END
 -while puts('hello')█
 +while puts('hello')
 +  
 +end
 END
 
-test "while <cond> do", <<~END
+test "ruby, while <cond> do", <<~END
 -while puts('hello') do█
 +while puts('hello') do
 +  
 +end
 END
 
-test "while <cond> do as sequence", <<~END
+test "ruby, while <cond> do as sequence", <<~END
 -while puts('hello') do█
 -def foo
 -end
@@ -221,21 +220,21 @@ test "while <cond> do as sequence", <<~END
 +end
 END
 
-test "until <cond>", <<~END
+test "ruby, until <cond>", <<~END
 -until puts('hello')█
 +until puts('hello')
 +  
 +end
 END
 
-test "until <cond> do", <<~END
+test "ruby, until <cond> do", <<~END
 -until puts('hello') do█
 +until puts('hello') do
 +  
 +end
 END
 
-test "until <cond> do as sequence", <<~END
+test "ruby, until <cond> do as sequence", <<~END
 -until puts('hello') do█
 -def foo
 -end
@@ -246,21 +245,21 @@ test "until <cond> do as sequence", <<~END
 +end
 END
 
-test "for loop without do", <<~END
+test "ruby, for loop without do", <<~END
 -for foo in 1..5█
 +for foo in 1..5
 +  
 +end
 END
 
-test "for loop with do", <<~END
+test "ruby, for loop with do", <<~END
 -for foo in 1..5 do█
 +for foo in 1..5 do
 +  
 +end
 END
 
-test "sequence, for loop without do", <<~END
+test "ruby, sequence, for loop without do", <<~END
 -for foo in 1..5█
 -def fun
 -end
@@ -271,7 +270,7 @@ test "sequence, for loop without do", <<~END
 +end
 END
 
-test "sequence, for loop with do", <<~END
+test "ruby, sequence, for loop with do", <<~END
 -for foo in 1..5 do█
 -def fun
 -end
@@ -282,21 +281,21 @@ test "sequence, for loop with do", <<~END
 +end
 END
 
-test "do block", <<~END
+test "ruby, do block", <<~END
 -foo.each do█
 +foo.each do
 +  
 +end
 END
 
-test "do block with args", <<~END
+test "ruby, do block with args", <<~END
 -foo.each do |bar, baz|█
 +foo.each do |bar, baz|
 +  
 +end
 END
 
-test "sequence, do block", <<~END
+test "ruby, sequence, do block", <<~END
 -foo.each do█
 -def foo
 -end
@@ -307,7 +306,7 @@ test "sequence, do block", <<~END
 +end
 END
 
-test "sequence, do block with args", <<~END
+test "ruby, sequence, do block with args", <<~END
 -foo.each do |bar, baz|█
 -def foo
 -end
@@ -318,14 +317,14 @@ test "sequence, do block with args", <<~END
 +end
 END
 
-test "if stmt", <<~END
+test "ruby, if stmt", <<~END
 -if true█
 +if true
 +  
 +end
 END
 
-test "sequence, if stmt", <<~END
+test "ruby, sequence, if stmt", <<~END
 -if true█
 -def foo
 -end
@@ -336,14 +335,14 @@ test "sequence, if stmt", <<~END
 +end
 END
 
-test "if stmt then", <<~END
+test "ruby, if stmt then", <<~END
 -if true then█
 +if true then
 +  
 +end
 END
 
-test "sequence, if stmt then", <<~END
+test "ruby, sequence, if stmt then", <<~END
 -if true then█
 -def foo
 -end
@@ -354,14 +353,14 @@ test "sequence, if stmt then", <<~END
 +end
 END
 
-test "begin stmt", <<~END
+test "ruby, begin stmt", <<~END
 -begin█
 +begin
 +  
 +end
 END
 
-test "begin stmt rescue", <<~END
+test "ruby, begin stmt rescue", <<~END
 -begin
 -rescue█
 +begin
@@ -370,7 +369,7 @@ test "begin stmt rescue", <<~END
 +end
 END
 
-test "begin stmt rescue with exceptions", <<~END
+test "ruby, begin stmt rescue with exceptions", <<~END
 -begin
 -rescue String█
 +begin
@@ -379,7 +378,7 @@ test "begin stmt rescue with exceptions", <<~END
 +end
 END
 
-test "begin stmt rescue ensure", <<~END
+test "ruby, begin stmt rescue ensure", <<~END
 -begin
 -rescue String
 -ensure█

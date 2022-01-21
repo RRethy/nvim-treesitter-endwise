@@ -16,9 +16,7 @@ require('nvim-treesitter.configs').setup {
 }
 ```
 
-This is a simple plugin that helps to end certain structures automatically. In Ruby, this means adding end after if, do, def, etc.
-
-Other languages are currently WIP.
+This is a simple plugin that helps to end certain structures automatically. In Ruby, this means adding end after if, do, def, etc. Lua is also supported.
 
 # Additional Language Support
 
