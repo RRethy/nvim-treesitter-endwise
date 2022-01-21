@@ -17,5 +17,5 @@
 ((ERROR ("until" @indent . (_) @cursor . "do"? @cursor)) (#endwise! "end"))
 ((ERROR ("for" @indent . (_) . (in . "in" . (_) @cursor) . "do"? @cursor)) (#endwise! "end"))
 ((ERROR ("do" @cursor @indent . (block_parameters)? @cursor)) (#endwise! "end"))
-((ERROR ("if" @indent . (_) @cursor . (then)? @cursor . ["elsif" (elsif (_))]? @cursor . ["else" (else)]? @cursor)) (#endwise! "end"))
 ((ERROR ("begin" @cursor @indent . ["rescue" @cursor (rescue "rescue" @cursor exceptions: (_)? @cursor)]? . ["ensure" (ensure "ensure" @cursor)]?)) (#endwise! "end"))
+((ERROR ("if" @indent . (_) @cursor . (then)? @cursor)) (#endwise! "end"))
