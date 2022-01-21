@@ -221,6 +221,31 @@ test "while <cond> do as sequence", <<~END
 +end
 END
 
+test "until <cond>", <<~END
+-until puts('hello')█
++until puts('hello')
++  
++end
+END
+
+test "until <cond> do", <<~END
+-until puts('hello') do█
++until puts('hello') do
++  
++end
+END
+
+test "until <cond> do as sequence", <<~END
+-until puts('hello') do█
+-def foo
+-end
++until puts('hello') do
++  
++end
++def foo
++end
+END
+
 test "for loop without do", <<~END
 -for foo in 1..5█
 +for foo in 1..5
