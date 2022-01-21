@@ -11,14 +11,6 @@ local function point_in_range(row, col, range)
         or row > range[3] or row == range[3] and col >= range[4])
 end
 
-local function tabstr()
-    if vim.bo.expandtab then
-        return string.rep(' ', vim.fn.shiftwidth())
-    else
-        return '	'
-    end
-end
-
 local function strip_leading_whitespace(line)
     local indent_end = indent_regex:match_str(line)
     if indent_end then
@@ -58,16 +50,9 @@ local function lacks_end(node, end_text)
 end
 
 local function add_end_node(indent_node_range, end_text)
-    local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+    local crow = unpack(vim.api.nvim_win_get_cursor(0))
     local indentation = strip_leading_whitespace(vim.fn.getline(indent_node_range[1] + 1))
     vim.fn.append(crow, indentation..end_text)
-
-    local line = vim.fn.getline(crow)
-    local trailing_text = string.sub(line, ccol + 1)
-    local _, text = strip_leading_whitespace(trailing_text)
-    local line_indentation = indentation..tabstr()
-    vim.fn.setline(crow, line_indentation..text)
-    vim.fn.cursor(crow, #line_indentation + 1)
 end
 
 local function endwise(bufnr)
