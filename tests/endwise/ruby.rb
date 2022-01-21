@@ -195,3 +195,28 @@ test "sequence, singleton_method works", <<~END
 +def foo
 +end
 END
+
+test "while <cond>", <<~END
+-while puts('hello')█
++while puts('hello')
++  █
++end
+END
+
+test "while <cond> do", <<~END
+-while puts('hello') do█
++while puts('hello') do
++  █
++end
+END
+
+test "while <cond> do as sequence", <<~END
+-while puts('hello') do█
+-def foo
+-end
++while puts('hello') do
++  █
++end
++def foo
++end
+END
