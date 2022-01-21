@@ -317,3 +317,93 @@ test "sequence, do block with args", <<~END
 +def foo
 +end
 END
+
+test "if stmt", <<~END
+-if true█
++if true
++  
++end
+END
+
+test "sequence, if stmt", <<~END
+-if true█
+-def foo
+-end
++if true
++  
++end
++def foo
++end
+END
+
+test "if stmt then", <<~END
+-if true then█
++if true then
++  
++end
+END
+
+test "sequence, if stmt then", <<~END
+-if true then█
+-def foo
+-end
++if true then
++  
++end
++def foo
++end
+END
+
+test "if stmt then else", <<~END
+-if true then
+-else█
++if true then
++else
++  
++end
+END
+
+test "if stmt then is no-op when else is present", <<~END
+-if true then█
+-else
++if true then
++
++else
+END
+
+test "if stmt with elseif is no-op", <<~END
+-if true█
+-elsif
++if true
++
++elsif
+END
+
+test "if stmt with elseif", <<~END
+-if true█
+-elsif
++if true
++
++elsif
+END
+
+test "if stmt with elseif else", <<~END
+-if true
+-elsif
+-else█
++if true
++elsif
++else
++  
++end
+END
+
+test "if stmt with elseif end is no-op", <<~END
+-if true
+-elsif bar█
+-end
++if true
++elsif bar
++
++end
+END

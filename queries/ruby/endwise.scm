@@ -6,6 +6,7 @@
 ((until condition: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
 ((for value: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
 ((do_block "do" @cursor parameters: (_)? @cursor) @endable @indent (#endwise! "end"))
+((if condition: (_) @cursor) @endable @indent (#endwise! "end"))
 
 ((ERROR ("module" @indent . [(constant) (scope_resolution)] @cursor)) (#endwise! "end"))
 ((ERROR ("class" @indent . [(constant) (scope_resolution)] @cursor . (superclass)? @cursor)) (#endwise! "end"))
@@ -15,105 +16,4 @@
 ((ERROR ("until" @indent . (_) @cursor . "do"? @cursor)) (#endwise! "end"))
 ((ERROR ("for" @indent . (_) . (in . "in" . (_) @cursor) . "do"? @cursor)) (#endwise! "end"))
 ((ERROR ("do" @cursor @indent . (block_parameters)? @cursor)) (#endwise! "end"))
-
-;; TODO: if/else still doesn't work
-
-; (
-;     "if" @start
-;     .
-;     (_) @end
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     "then" @end
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     (then ("then") @end)
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     (then)
-;     .
-;     "else" @end
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     "else" @end
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     "elsif"
-;     .
-;     (_) @end
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     "elsif"
-;     .
-;     (_)
-;     .
-;     "then" @end
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     "elsif"
-;     .
-;     (_)
-;     .
-;     (then ("then") @end)
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     "elsif"
-;     .
-;     (_)
-;     .
-;     (then)
-;     .
-;     "else" @end
-; )
-
-; (
-;     "if" @start
-;     .
-;     (_)
-;     .
-;     "elsif"
-;     .
-;     (_)
-;     .
-;     "else" @end
-; )
+((ERROR ("if" @indent . (_) @cursor . (then)? @cursor . ["elsif" (elsif (_))]? @cursor . ["else" (else)]? @cursor)) (#endwise! "end"))
