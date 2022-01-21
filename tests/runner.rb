@@ -10,12 +10,12 @@ def config(opts)
   }.merge(opts)
 end
 
-def test(str)
+def test(description, testcase)
   if @config.nil?
     return
   end
 
-  input, expected = str.split("\n").partition { |line| line.start_with?('-') }
+  input, expected = testcase.split("\n").partition { |line| line.start_with?('-') }
   input = "#{input.map { |line| line[1..] }.join("\n")}\n"
   expected = "#{expected.map { |line| line[1..] }.join("\n")}\n"
 
@@ -27,7 +27,7 @@ def test(str)
     system("nvim", "-u", BASE_INIT_LUA, "-S", overrides, input_fname, "-c", "lua ExecuteCR()")
     got = File.read(input_fname)
     if got != expected
-      puts "\e[31mFailed\e[0m"
+      puts "\e[31mFailed\e[0m: #{description}"
       puts "\e[34mGot\e[0m:", got.gsub(/\t/, "<tab>")
       puts "\e[34mExpected:\e[0m", expected.gsub(/\t/, "<tab>")
     else

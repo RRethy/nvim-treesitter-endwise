@@ -6,7 +6,7 @@ vim.opt.shiftwidth = 2
 INIT_LUA
 })
 
-test <<~END
+test "2 spaces works", <<~END
 -  module Foo█
 -def foo
 -end
@@ -25,7 +25,7 @@ vim.opt.shiftwidth = 4
 INIT_LUA
 })
 
-test <<~END
+test "4 spaces works", <<~END
 -    module Foo█
 -def foo
 -end
@@ -44,7 +44,7 @@ vim.opt.shiftwidth = 2
 INIT_LUA
 })
 
-test <<~END
+test "tabs works", <<~END
 -	module Foo█
 -def foo
 -end

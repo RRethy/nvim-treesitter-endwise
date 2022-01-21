@@ -4,11 +4,9 @@
         (class)
         (method)
         (singleton_method)
-        (if)
-        (while)
-        (do_block)
     ] @capture
     (#annotate! "subtree")
+    (#endwise-end! "end")
 )
 
 
@@ -21,6 +19,7 @@
         )
     )
     (#annotate! "sequence")
+    (#endwise-end! "end")
 )
 
 (
@@ -34,6 +33,7 @@
         )
     )
     (#annotate! "sequence")
+    (#endwise-end! "end")
 )
 
 (
@@ -47,6 +47,7 @@
         )
     )
     (#annotate! "sequence")
+    (#endwise-end! "end")
 )
 
 (
@@ -62,6 +63,7 @@
         )
     )
     (#annotate! "sequence")
+    (#endwise-end! "end")
 )
 
 ;; TODO: if/else still doesn't work
