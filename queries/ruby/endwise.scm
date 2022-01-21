@@ -5,6 +5,7 @@
 ((while condition: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
 ((until condition: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
 ((for value: (_) @cursor body: (do ("do")? @cursor) @endable) @indent (#endwise! "end"))
+((do_block "do" @cursor parameters: (_)? @cursor) @endable @indent (#endwise! "end"))
 
 ((ERROR ("module" @indent . [(constant) (scope_resolution)] @cursor)) (#endwise! "end"))
 ((ERROR ("class" @indent . [(constant) (scope_resolution)] @cursor . (superclass)? @cursor)) (#endwise! "end"))

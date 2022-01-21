@@ -281,3 +281,17 @@ test "sequence, for loop with do", <<~END
 +def fun
 +end
 END
+
+test "do block", <<~END
+-foo.each do█
++foo.each do
++  
++end
+END
+
+test "do block with args", <<~END
+-foo.each do |bar, baz|█
++foo.each do |bar, baz|
++  
++end
+END
