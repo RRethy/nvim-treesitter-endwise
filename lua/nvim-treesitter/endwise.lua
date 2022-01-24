@@ -76,11 +76,22 @@ local function endwise(bufnr)
     col = col - 1
 
     local root_lang_tree = parsers.get_parser(bufnr)
-    local root = ts_utils.get_root_for_position(row, col, root_lang_tree)
+    local tree_at_pos = root_lang_tree:language_for_range({row, col, row, col})
+    lang = tree_at_pos:lang();
+    if not lang then
+        return
+    end
+
+    local root = ts_utils.get_root_for_position(row, col, tree_at_pos)
     if not root then
         return
     end
+
     local query = queries.get_query(lang, 'endwise')
+    if not query then
+        return
+    end
+
     local range = {root:range()}
 
     for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1) do
