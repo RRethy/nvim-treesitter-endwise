@@ -1,8 +1,8 @@
 ((if_statement condition: (_) @cursor) @endable @indent (#endwise! "endif"))
-(((for_loop (_) (_) @cursor) @indent) (#endwise! "endfor"))
-(((while_loop condition: (_) @cursor) @indent) (#endwise! "endwhile"))
-((function_definition . [((function_declaration name: (_) parameters: (_)) ["abort" "closure" "dict" "range"]* @cursor) ((function_declaration name: (_) parameters: (_)) @cursor)]) @endable @indent (#endwise! "endfunction"))
-((try_statement) @cursor @endable @indent (#endwise! "endtry"))
+((for_loop iter: (_) @cursor) @indent (#endwise! "endfor"))
+((while_loop condition: (_) @cursor) @indent (#endwise! "endwhile"))
+((function_definition (function_declaration parameters: (_) @cursor) . ["abort" "closure" "dict" "range"]* @cursor) @endable @indent (#endwise! "endfunction"))
+((try_statement "try" @cursor) @endable @indent (#endwise! "endtry"))
 
 ((ERROR . ("if" @indent . (_) @cursor)) (#endwise! "endif"))
 ((ERROR . ("for" @indent . (_) . "in" . (_) @cursor)) (#endwise! "endfor"))
