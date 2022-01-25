@@ -2,7 +2,7 @@
   <a href="https://github.com/RRethy/nvim-treesitter-endwise">nvim-treesitter-endwise</a>
 </h1>
 
-<h4 align="center">wisely add "end" in ruby, Lua, Vimscript, etc.</h4>
+<h4 align="center">wisely add "end" in Ruby, Lua, Vimscript, Julia, etc.</h4>
 
 https://user-images.githubusercontent.com/21000943/150613732-442589e2-6b08-4b14-b0a3-47effef0eb28.mov
 
@@ -18,7 +18,7 @@ require('nvim-treesitter.configs').setup {
 
 This is a simple plugin that helps to end certain structures automatically. In Ruby, this means adding end after if, do, def, etc.
 
-**Supported Languages**: *Ruby*, *Lua*, *Vimscript*
+**Supported Languages**: *Ruby*, *Lua*, *Vimscript*, *Julia"
 
 # Additional Language Support
 
