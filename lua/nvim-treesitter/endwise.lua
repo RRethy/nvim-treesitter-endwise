@@ -6,6 +6,15 @@ local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
 
+local function text_for_range(range)
+    local srow, scol, erow, ecol = unpack(range)
+    if srow == erow then
+        return string.sub(vim.fn.getline(srow + 1), scol+1, ecol)
+    else
+        return string.sub(vim.fn.getline(srow + 1), scol+1, -1)..string.sub(vim.fn.getline(erow + 1), 1, ecol)
+    end
+end
+
 local function point_in_range(row, col, range)
     return not (row < range[1] or row == range[1] and col < range[2]
         or row > range[3] or row == range[3] and col >= range[4])
@@ -74,7 +83,6 @@ local function endwise(bufnr)
     local range = {root:range()}
 
     for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1) do
-        local end_text = metadata.endwise_end_text
         local indent_node, cursor_node, endable_node
         for id, node in pairs(match) do
             if query.captures[id] == 'indent' then
@@ -89,7 +97,12 @@ local function endwise(bufnr)
         local indent_node_range = {indent_node:range()}
         local cursor_node_range = {cursor_node:range()}
         if point_in_range(row, col, cursor_node_range) then
-            if not endable_node or lacks_end(endable_node, end_text) then
+            local end_node_type = metadata.endwise_end_node_type or metadata.endwise_end_text
+            if not endable_node or lacks_end(endable_node, end_node_type) then
+                local end_text = metadata.endwise_end_text
+                if metadata.endwise_end_suffix then
+                    end_text = end_text..text_for_range({metadata.endwise_end_suffix:range()})
+                end
                 add_end_node(indent_node_range, end_text)
                 return
             end
@@ -97,8 +110,10 @@ local function endwise(bufnr)
     end
 end
 
-vim.treesitter.query.add_directive('endwise!', function(_, _, _, predicate, metadata)
+vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, metadata)
     metadata.endwise_end_text = predicate[2]
+    metadata.endwise_end_suffix = match[predicate[3]]
+    metadata.endwise_end_node_type = predicate[4]
 end)
 
 vim.on_key(function(key)

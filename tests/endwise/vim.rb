@@ -155,3 +155,21 @@ test "vim, nested try", <<~END
 +  endtry
 +endtry
 END
+
+test "vim, nested global function has dynamic end text", <<~END
+-func! Foo()
+-  fun Bar()█
+-endfunc
++func! Foo()
++  fun Bar()
++    
++  endfun
++endfunc
+END
+
+test "vim, global function has dynamic end text", <<~END
+-fun Bar()█
++fun Bar()
++  
++endfun
+END
