@@ -90,7 +90,7 @@ test "vim, try", <<~END
 +endtry
 END
 
-test "lua, nested global function", <<~END
+test "vim, nested global function", <<~END
 -function Foo()
 -  function Bar()█
 -endfunction
@@ -101,7 +101,7 @@ test "lua, nested global function", <<~END
 +endfunction
 END
 
-test "lua, nested script local function", <<~END
+test "vim, nested script local function", <<~END
 -function s:foo()
 -  function s:bar()█
 -endfunction
@@ -112,7 +112,7 @@ test "lua, nested script local function", <<~END
 +endfunction
 END
 
-test "lua, nested while loop", <<~END
+test "vim, nested while loop", <<~END
 -while true
 -  while true█
 -endwhile
@@ -123,7 +123,7 @@ test "lua, nested while loop", <<~END
 +endwhile
 END
 
-test "lua, nested for loop", <<~END
+test "vim, nested for loop", <<~END
 -for foo in bar
 -  for baz in qux█
 -endfor
@@ -134,7 +134,7 @@ test "lua, nested for loop", <<~END
 +endfor
 END
 
-test "lua, nested if stmt", <<~END
+test "vim, nested if stmt", <<~END
 -if foo
 -  if bar█
 -endif
@@ -145,7 +145,7 @@ test "lua, nested if stmt", <<~END
 +endif
 END
 
-test "lua, nested try", <<~END
+test "vim, nested try", <<~END
 -try
 -  try█
 -endtry
