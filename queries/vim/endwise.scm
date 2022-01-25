@@ -4,8 +4,8 @@
 ((function_definition (function_declaration parameters: (_) @cursor) . ["abort" "closure" "dict" "range"]* @cursor) @endable @indent (#endwise! "endfunction"))
 ((try_statement "try" @cursor) @endable @indent (#endwise! "endtry"))
 
-((ERROR . ("if" @indent . (_) @cursor)) (#endwise! "endif"))
-((ERROR . ("for" @indent . (_) . "in" . (_) @cursor)) (#endwise! "endfor"))
-((ERROR . ("while" @indent . (_) @cursor)) (#endwise! "endwhile"))
-((ERROR . ("function" @indent . [((function_declaration name: (_) parameters: (_)) ["abort" "closure" "dict" "range"]* @cursor) ((function_declaration name: (_) parameters: (_)) @cursor)])) (#endwise! "endfunction"))
-((ERROR . ("try" @indent @cursor)) (#endwise! "endtry"))
+((ERROR ("if" @indent . (_) @cursor)) (#endwise! "endif"))
+((ERROR ("for" @indent . (_) . "in" . (_) @cursor)) (#endwise! "endfor"))
+((ERROR ("while" @indent . (_) @cursor)) (#endwise! "endwhile"))
+((ERROR ("function" @indent (bang)? . (function_declaration parameters: (_) @cursor) ["abort" "closure" "dict" "range"]* @cursor)) (#endwise! "endfunction"))
+((ERROR ("try" @indent @cursor)) (#endwise! "endtry"))
