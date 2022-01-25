@@ -113,45 +113,45 @@ test "lua, nested script local function", <<~END
 END
 
 test "lua, nested while loop", <<~END
--function Foo()
+-while true
 -  while true█
--endfunction
-+function Foo()
+-endwhile
++while true
 +  while true
 +    
 +  endwhile
-+endfunction
++endwhile
 END
 
 test "lua, nested for loop", <<~END
--function Foo()
--  for bar in baz█
--endfunction
-+function Foo()
-+  for bar in baz
+-for foo in bar
+-  for baz in qux█
+-endfor
++for foo in bar
++  for baz in qux
 +    
 +  endfor
-+endfunction
++endfor
 END
 
 test "lua, nested if stmt", <<~END
--function Foo()
--  if foo█
--endfunction
-+function Foo()
-+  if foo
+-if foo
+-  if bar█
+-endif
++if foo
++  if bar
 +    
 +  endif
-+endfunction
++endif
 END
 
 test "lua, nested try", <<~END
--function Foo()
+-try
 -  try█
--endfunction
-+function Foo()
+-endtry
++try
 +  try
 +    
 +  endtry
-+endfunction
++endtry
 END
