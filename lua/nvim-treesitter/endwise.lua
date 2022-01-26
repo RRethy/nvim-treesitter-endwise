@@ -70,6 +70,7 @@ local function endwise(bufnr)
         return
     end
 
+    -- Search up the first the closest non-whitespace text before the cursor
     local row, col = unpack(vim.fn.searchpos('\\S', 'nbW'))
     row = row - 1
     col = col - 1
@@ -110,6 +111,16 @@ local function endwise(bufnr)
     end
 end
 
+-- #endwise! tree-sitter directive
+-- @param endwise_end_text string end text to add
+-- @param endwise_end_suffix node|nil captured node that contains text to add
+--  as a suffix to the end text. E.g. In vimscript, `func` will be ended with
+--  `endfunc` and `function` will be ended with `endfunction` even though they
+--  are parsed the same. nil to always use endwise_end_text.
+-- @param endwise_end_node_type string|nil node type to check against the last
+--  child of the @endable captured node. This is required because the
+--  endwise_end_text won't match the nodetype if it's dynamic for langauges like
+--  vimscript. nil to use endwise_end_text as the node type.
 vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, metadata)
     metadata.endwise_end_text = predicate[2]
     metadata.endwise_end_suffix = match[predicate[3]]
@@ -122,9 +133,9 @@ vim.on_key(function(key)
     local bufnr = vim.fn.bufnr()
     if not tracking[bufnr] then return end
     vim.schedule_wrap(function()
-        vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR')
+        vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR') -- Not currently used
         endwise(bufnr)
-        vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR')
+        vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
     end)()
 end, nil)
 
