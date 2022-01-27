@@ -75,14 +75,13 @@ local function endwise(bufnr)
     row = row - 1
     col = col - 1
 
-    local root_lang_tree = parsers.get_parser(bufnr)
-    local tree_at_pos = root_lang_tree:language_for_range({row, col, row, col})
-    lang = tree_at_pos:lang();
+    local lang_tree = parsers.get_parser(bufnr):language_for_range({row, col, row, col})
+    lang = lang_tree:lang()
     if not lang then
         return
     end
 
-    local root = ts_utils.get_root_for_position(row, col, tree_at_pos)
+    local root = ts_utils.get_root_for_position(row, col, lang_tree)
     if not root then
         return
     end
