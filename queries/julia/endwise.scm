@@ -21,5 +21,5 @@
 ("try" @indent @cursor (#endwise! "end"))
 ("quote" @indent @cursor (#endwise! "end"))
 ("begin" @indent @cursor (#endwise! "end"))
-(("do" @cursor @indent . (identifier)? @cursor . (tuple_expression)? @cursor . (bare_tuple_expression)? @cursor) (#endwise! "end"))
-
+("do" @indent @cursor . [(bare_tuple_expression) (identifier) (parenthesized_expression)] @cursor (#endwise! "end"))
+("do" @indent @cursor (#endwise! "end"))
