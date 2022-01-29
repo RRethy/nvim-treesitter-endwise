@@ -353,6 +353,62 @@ test "ruby, sequence, if stmt then", <<~END
 +end
 END
 
+test "ruby, unless stmt", <<~END
+-unless true█
++unless true
++  
++end
+END
+
+test "ruby, sequence, unless stmt", <<~END
+-unless true█
+-def foo
+-end
++unless true
++  
++end
++def foo
++end
+END
+
+test "ruby, unless stmt then", <<~END
+-unless true then█
++unless true then
++  
++end
+END
+
+test "ruby, sequence, unless stmt then", <<~END
+-unless true then█
+-def foo
+-end
++unless true then
++  
++end
++def foo
++end
+END
+
+test "ruby, case stmt", <<~END
+-case foo█
++case foo
++  
++end
+END
+
+test "ruby, nested case stmt", <<~END
+-case foo
+-when 0
+-  case bar█
+-end
++case foo
++when 0
++  case bar
++    
++  end
++end
+END
+
 test "ruby, begin stmt", <<~END
 -begin█
 +begin
