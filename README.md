@@ -27,3 +27,5 @@ Please open an issue for new languages, right now I'm open PRs but I won't be im
 # Credit
 
 This is just a rewrite of https://github.com/tpope/vim-endwise to leverage Treesitter so it can be more accurate and work without having to run Neovim's slow regex based highlighting along with nvim-treesitter highlighting.
+
+Special thanks to @jasonrhansen who added support for injected languages, Vimscript, and Julia.
