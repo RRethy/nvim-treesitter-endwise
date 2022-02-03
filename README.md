@@ -20,6 +20,8 @@ This is a simple plugin that helps to end certain structures automatically. In R
 
 **Supported Languages**: *Ruby*, *Lua*, *Vimscript*
 
+**Note**: This plugin doesn't work well with `:h nvim-treesitter-indentation-mod`
+
 # Additional Language Support
 
 Please open an issue for new languages, right now I'm open PRs but I won't be implementing other languages myself (except for maybe shell script). See https://github.com/RRethy/nvim-treesitter-endwise/issues/2#issuecomment-1019574925 for more information on adding support for a new language.
