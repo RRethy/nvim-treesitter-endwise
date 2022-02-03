@@ -137,17 +137,15 @@ vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, 
     metadata.endwise_end_node_type = predicate[4]
 end)
 
-vim.on_key(function(key)
-    vim.schedule_wrap(function()
-        if vim.fn.char2nr(key) ~= 13 then return end
-        if vim.fn.mode() ~= 'i' then return end
-        local bufnr = vim.fn.bufnr()
-        if not tracking[bufnr] then return end
-        vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR') -- Not currently used
-        endwise(bufnr)
-        vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
-    end)()
-end, nil)
+vim.on_key(vim.schedule_wrap(function(key)
+    if vim.fn.char2nr(key) ~= 13 then return end
+    if vim.fn.mode() ~= 'i' then return end
+    local bufnr = vim.fn.bufnr()
+    if not tracking[bufnr] then return end
+    vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR') -- Not currently used
+    endwise(bufnr)
+    vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
+end) , nil)
 
 function M.attach(bufnr)
     tracking[bufnr] = true
