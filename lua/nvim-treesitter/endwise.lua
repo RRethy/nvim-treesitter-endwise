@@ -6,6 +6,14 @@ local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
 
+local function tabstr()
+    if vim.bo.expandtab then
+        return string.rep(" ", vim.fn.shiftwidth())
+    else
+        return "	"
+    end
+end
+
 local function text_for_range(range)
     local srow, scol, erow, ecol = unpack(range)
     if srow == erow then
@@ -62,6 +70,12 @@ local function add_end_node(indent_node_range, end_text)
     local crow = unpack(vim.api.nvim_win_get_cursor(0))
     local indentation = strip_leading_whitespace(vim.fn.getline(indent_node_range[1] + 1))
     vim.fn.append(crow, indentation..end_text)
+
+    local line = vim.fn.getline(crow)
+    local _, text = strip_leading_whitespace(line)
+    local cursor_indentation = indentation..tabstr()
+    vim.fn.setline(crow, cursor_indentation..text)
+    vim.fn.cursor(crow, #cursor_indentation + 1)
 end
 
 local function endwise(bufnr)
@@ -145,7 +159,7 @@ vim.on_key(vim.schedule_wrap(function(key)
     vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR') -- Not currently used
     endwise(bufnr)
     vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
-end) , nil)
+end), nil)
 
 function M.attach(bufnr)
     tracking[bufnr] = true
