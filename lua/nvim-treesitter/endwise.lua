@@ -1,10 +1,19 @@
 local parsers = require('nvim-treesitter.parsers')
 local queries = require('nvim-treesitter.query')
 local ts_utils = require('nvim-treesitter.ts_utils')
+local ffi = require('ffi')
 
 local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
+ffi.cdef [[
+/// @returns[allocated] mode string
+char *get_mode(void);
+/// free() wrapper that delegates to the backing memory manager
+///
+/// @note Use XFREE_CLEAR() instead, if possible.
+void xfree(void *ptr);
+]]
 
 local function tabstr()
     if vim.bo.expandtab then
@@ -151,15 +160,21 @@ vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, 
     metadata.endwise_end_node_type = predicate[4]
 end)
 
-vim.on_key(vim.schedule_wrap(function(key)
-    if vim.fn.char2nr(key) ~= 13 then return end
-    if vim.fn.mode() ~= 'i' then return end
-    local bufnr = vim.fn.bufnr()
-    if not tracking[bufnr] then return end
-    vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR') -- Not currently used
-    endwise(bufnr)
-    vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
-end), nil)
+vim.on_key(function(key)
+    if key ~= "\r" then return end
+    -- vim.fn.mode() may fail if we call it outside schedule_wrap. To get
+    -- around this, we call Neovim internal C functions directly
+    if ffi.string(ffi.gc(ffi.C.get_mode(), ffi.C.xfree)) ~= 'i' then
+        return
+    end
+    vim.schedule_wrap(function()
+        local bufnr = vim.fn.bufnr()
+        if not tracking[bufnr] then return end
+        vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR') -- Not currently used
+        endwise(bufnr)
+        vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
+    end)()
+end, nil)
 
 function M.attach(bufnr)
     tracking[bufnr] = true
