@@ -10,8 +10,6 @@ ffi.cdef [[
 /// @returns[allocated] mode string
 char *get_mode(void);
 /// free() wrapper that delegates to the backing memory manager
-///
-/// @note Use XFREE_CLEAR() instead, if possible.
 void xfree(void *ptr);
 ]]
 
