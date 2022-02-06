@@ -9,23 +9,20 @@ function M.init()
             enable = false,
             disable = {},
             is_supported = function(lang)
-                if queries.has_query_files(lang, 'endwise') then
-                    return true
-                end
-
                 local seen = {}
                 local function has_nested_endwise_language(nested_lang)
+                    if queries.has_query_files(nested_lang, 'endwise') then
+                        return true
+                    end
                     if seen[nested_lang] then
                         return false
                     end
                     seen[nested_lang] = true
 
-                    if queries.has_query_files(lang, 'injections') then
-                        local query = queries.get_query(lang, 'injections')
+                    if queries.has_query_files(nested_lang, 'injections') then
+                        local query = queries.get_query(nested_lang, 'injections')
                         for _, capture in ipairs(query.info.captures) do
-                            if capture == 'language'
-                                or queries.has_query_files(lang, 'endwise')
-                                or has_nested_endwise_language(lang) then
+                            if capture == 'language' or has_nested_endwise_language(capture) then
                                 return true
                             end
                         end
