@@ -1,4 +1,5 @@
 local queries = require("nvim-treesitter.query")
+local parsers = require('nvim-treesitter.parsers')
 
 local M = {}
 
@@ -11,6 +12,9 @@ function M.init()
             is_supported = function(lang)
                 local seen = {}
                 local function has_nested_endwise_language(nested_lang)
+                    if not parsers.has_parser(lang) then
+                        return false
+                    end
                     if queries.has_query_files(nested_lang, 'endwise') then
                         return true
                     end
