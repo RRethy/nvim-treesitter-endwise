@@ -12,7 +12,7 @@ function M.init()
             is_supported = function(lang)
                 local seen = {}
                 local function has_nested_endwise_language(nested_lang)
-                    if not parsers.has_parser(lang) then
+                    if not parsers.has_parser(nested_lang) then
                         return false
                     end
                     if queries.has_query_files(nested_lang, 'endwise') then
