@@ -91,6 +91,10 @@ local function endwise(bufnr)
         return
     end
 
+    if not parsers.has_parser(lang) then
+        return
+    end
+
     -- Search up the first the closest non-whitespace text before the cursor
     local row, col = unpack(vim.fn.searchpos('\\S', 'nbW'))
     row = row - 1
