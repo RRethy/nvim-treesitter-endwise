@@ -167,3 +167,10 @@ test "lua, nested if stmt", <<~END
 +  end
 +end
 END
+
+test "lua, this will fail", <<~END
+-foo(vim.schedule_wrap(█))
++foo(vim.schedule_wrap(
++  
++end))
+END
