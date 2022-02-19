@@ -451,3 +451,10 @@ test "ruby, this will fail", <<~END
 +
 +FOO
 END
+
+test "ruby, conditionless case stmt", <<~END
+-case█
++case
++
++end
+END
