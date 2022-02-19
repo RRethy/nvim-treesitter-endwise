@@ -452,7 +452,7 @@ test "ruby, this will fail", <<~END
 +FOO
 END
 
-test "ruby, conditionless case stmt", <<~END
+test "ruby, valueless case stmt", <<~END
 -case█
 +case
 +
