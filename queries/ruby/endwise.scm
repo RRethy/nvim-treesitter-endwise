@@ -9,7 +9,8 @@
 ((if condition: (_) @cursor) @endable @indent (#endwise! "end"))
 ((begin "begin" @cursor . (rescue "rescue" @cursor exceptions: (_)? @cursor)? . (ensure "ensure" @cursor)?) @endable @indent (#endwise! "end"))
 ((unless condition: (_) @cursor) @endable @indent (#endwise! "end"))
-((case value: (_) @cursor) @endable @indent (#endwise! "end"))
+((case value: (_) @cursor) @endable @indent (#endwise! "end" nil "end" 0))
+(((case) @cursor) @endable @indent (#endwise! "end" nil "end" 0))
 
 ((ERROR ("module" @indent . [(constant) (scope_resolution)] @cursor)) (#endwise! "end"))
 ((ERROR ("class" @indent . [(constant) (scope_resolution)] @cursor . (superclass)? @cursor)) (#endwise! "end"))

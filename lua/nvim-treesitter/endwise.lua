@@ -13,9 +13,9 @@ char *get_mode(void);
 void xfree(void *ptr);
 ]]
 
-local function tabstr()
+local function tabstr(count)
     if vim.bo.expandtab then
-        return string.rep(" ", vim.fn.shiftwidth())
+        return string.rep(" ", count or vim.fn.shiftwidth())
     else
         return "	"
     end
@@ -73,14 +73,14 @@ local function lacks_end(node, end_text)
     return false
 end
 
-local function add_end_node(indent_node_range, end_text)
+local function add_end_node(indent_node_range, end_text, indentation_str)
     local crow = unpack(vim.api.nvim_win_get_cursor(0))
     local indentation = strip_leading_whitespace(vim.fn.getline(indent_node_range[1] + 1))
     vim.fn.append(crow, indentation..end_text)
 
     local line = vim.fn.getline(crow)
     local _, text = strip_leading_whitespace(line)
-    local cursor_indentation = indentation..tabstr()
+    local cursor_indentation = indentation..indentation_str
     vim.fn.setline(crow, cursor_indentation..text)
     vim.fn.cursor(crow, #cursor_indentation + 1)
 end
@@ -139,7 +139,7 @@ local function endwise(bufnr)
                 if metadata.endwise_end_suffix then
                     end_text = end_text..text_for_range({metadata.endwise_end_suffix:range()})
                 end
-                add_end_node(indent_node_range, end_text)
+                add_end_node(indent_node_range, end_text, tabstr(metadata.endwise_indentation))
                 return
             end
         end
@@ -160,6 +160,7 @@ vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, 
     metadata.endwise_end_text = predicate[2]
     metadata.endwise_end_suffix = match[predicate[3]]
     metadata.endwise_end_node_type = predicate[4]
+    metadata.endwise_indentation = predicate[5]
 end)
 
 vim.on_key(function(key)
