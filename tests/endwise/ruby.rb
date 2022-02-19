@@ -404,7 +404,7 @@ test "ruby, nested case stmt", <<~END
 +case foo
 +when 0
 +  case bar
-+
++  
 +  end
 +end
 END
