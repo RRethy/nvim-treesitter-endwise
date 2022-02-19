@@ -73,14 +73,14 @@ local function lacks_end(node, end_text)
     return false
 end
 
-local function add_end_node(indent_node_range, end_text)
+local function add_end_node(indent_node_range, end_text, shiftcount)
     local crow = unpack(vim.api.nvim_win_get_cursor(0))
     local indentation = strip_leading_whitespace(vim.fn.getline(indent_node_range[1] + 1))
     vim.fn.append(crow, indentation..end_text)
 
     local line = vim.fn.getline(crow)
     local _, text = strip_leading_whitespace(line)
-    local cursor_indentation = indentation..tabstr()
+    local cursor_indentation = indentation..string.rep(tabstr(), shiftcount)
     vim.fn.setline(crow, cursor_indentation..text)
     vim.fn.cursor(crow, #cursor_indentation + 1)
 end
@@ -139,7 +139,7 @@ local function endwise(bufnr)
                 if metadata.endwise_end_suffix then
                     end_text = end_text..text_for_range({metadata.endwise_end_suffix:range()})
                 end
-                add_end_node(indent_node_range, end_text)
+                add_end_node(indent_node_range, end_text, metadata.endwise_shiftcount)
                 return
             end
         end
@@ -156,10 +156,13 @@ end
 --  child of the @endable captured node. This is required because the
 --  endwise_end_text won't match the nodetype if it's dynamic for langauges like
 --  vimscript. nil to use endwise_end_text as the node type.
+-- @param endwise_shiftcount number a non-negative number of shifts to indent with,
+--  defaults to 1
 vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, metadata)
     metadata.endwise_end_text = predicate[2]
     metadata.endwise_end_suffix = match[predicate[3]]
     metadata.endwise_end_node_type = predicate[4]
+    metadata.endwise_shiftcount = predicate[5] or 1
 end)
 
 vim.on_key(function(key)

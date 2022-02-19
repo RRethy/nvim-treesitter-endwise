@@ -392,7 +392,7 @@ END
 test "ruby, case stmt", <<~END
 -case foo█
 +case foo
-+  
++
 +end
 END
 
@@ -404,7 +404,7 @@ test "ruby, nested case stmt", <<~END
 +case foo
 +when 0
 +  case bar
-+    
++  
 +  end
 +end
 END
@@ -450,4 +450,11 @@ test "ruby, this will fail", <<~END
 +test "foo" <<~FOO
 +
 +FOO
+END
+
+test "ruby, conditionless case stmt", <<~END
+-case█
++case
++
++end
 END
