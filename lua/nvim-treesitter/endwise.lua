@@ -168,7 +168,13 @@ end)
 vim.on_key(function(key)
     if key ~= "\r" then return end
     -- vim.fn.mode() may fail if we call it outside schedule_wrap. To get
-    -- around this, we call Neovim internal C functions directly
+    -- around this, we call Neovim internal C functions directly.
+    -- This is needed because a user can have press <CR> in a different mode
+    -- (e.g. command-line mode) which then puts them into insert mode and
+    -- triggers <CR>, this will trigger on_key twice and the callback to
+    -- schedule_wrap will both trigger while in insert mode, this will lead to
+    -- two `end` tokens added. We check the mode before we schedule_wrap our
+    -- callback to ensure we only react to insert mode <CR>.
     if ffi.string(ffi.gc(ffi.C.get_mode(), ffi.C.xfree)) ~= 'i' then
         return
     end
