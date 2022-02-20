@@ -59,7 +59,8 @@ local function lacks_end(node, end_text)
     local indentation = strip_leading_whitespace(vim.fn.getline(node_range[1] + 1))
     local end_node_range = {end_node:range()}
     local end_node_indentation = strip_leading_whitespace(vim.fn.getline(end_node_range[1] + 1))
-    if indentation == end_node_indentation then
+    local crow = unpack(vim.api.nvim_win_get_cursor(0))
+    if indentation == end_node_indentation or end_node_range[3] == crow - 1 then
         return false
     end
 

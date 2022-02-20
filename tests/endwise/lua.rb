@@ -174,3 +174,9 @@ test "lua, this will fail", <<~END
 +  
 +end))
 END
+
+test "lua, end node with different indentation picked up on same line", <<~END
+-foo(function foo()█ print('hello') end)
++foo(function foo()
++  print('hello') end)
+END
