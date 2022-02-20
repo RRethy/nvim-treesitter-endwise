@@ -445,16 +445,16 @@ test "ruby, begin stmt rescue ensure", <<~END
 +end
 END
 
-test "ruby, this will fail", <<~END
--test "foo" <<~FOO█
-+test "foo" <<~FOO
-+
-+FOO
-END
-
 test "ruby, valueless case stmt", <<~END
 -case█
 +case
 +
 +end
+END
+
+test "ruby, this will fail", <<~END
+-test "foo" <<~FOO█
++test "foo" <<~FOO
++
++FOO
 END

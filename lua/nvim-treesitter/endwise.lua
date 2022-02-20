@@ -74,15 +74,27 @@ local function lacks_end(node, end_text)
     return false
 end
 
-local function add_end_node(indent_node_range, end_text, shiftcount)
+local function add_end_node(indent_node_range, endable_node_range, end_text, shiftcount)
     local crow = unpack(vim.api.nvim_win_get_cursor(0))
     local indentation = strip_leading_whitespace(vim.fn.getline(indent_node_range[1] + 1))
-    vim.fn.append(crow, indentation..end_text)
 
     local line = vim.fn.getline(crow)
-    local _, text = strip_leading_whitespace(line)
+    local trailing_cursor_text, trailing_end_text
+    if endable_node_range == nil or crow - 1 < endable_node_range[3] then
+        _, trailing_cursor_text = strip_leading_whitespace(line)
+        trailing_end_text = ""
+    elseif crow - 1 == endable_node_range[3] then
+        _, trailing_cursor_text = strip_leading_whitespace(string.sub(line, 1, endable_node_range[4]))
+        _, trailing_end_text = strip_leading_whitespace(string.sub(line, endable_node_range[4] + 1, -1))
+    else
+        trailing_cursor_text = ""
+        _, trailing_end_text = strip_leading_whitespace(line)
+    end
+
     local cursor_indentation = indentation..string.rep(tabstr(), shiftcount)
-    vim.fn.setline(crow, cursor_indentation..text)
+
+    vim.fn.append(crow, indentation..end_text..trailing_end_text)
+    vim.fn.setline(crow, cursor_indentation..trailing_cursor_text)
     vim.fn.cursor(crow, #cursor_indentation + 1)
 end
 
@@ -140,7 +152,8 @@ local function endwise(bufnr)
                 if metadata.endwise_end_suffix then
                     end_text = end_text..text_for_range({metadata.endwise_end_suffix:range()})
                 end
-                add_end_node(indent_node_range, end_text, metadata.endwise_shiftcount)
+                local endable_node_range = endable_node and {endable_node:range()} or nil
+                add_end_node(indent_node_range, endable_node_range, end_text, metadata.endwise_shiftcount)
                 return
             end
         end

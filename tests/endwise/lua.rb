@@ -168,15 +168,22 @@ test "lua, nested if stmt", <<~END
 +end
 END
 
-test "lua, this will fail", <<~END
--foo(vim.schedule_wrap(█))
-+foo(vim.schedule_wrap(
-+  
-+end))
-END
-
 test "lua, end node with different indentation picked up on same line", <<~END
 -foo(function foo()█ print('hello') end)
 +foo(function foo()
 +  print('hello') end)
+END
+
+test "lua, trailing text that belongs to parent", <<~END
+-foo(vim.schedule_wrap(function()█))
++foo(vim.schedule_wrap(function()
++  
++end))
+END
+
+test "lua, mix trailing text that belongs to parent and endable node", <<~END
+-foo(vim.schedule_wrap(function()█print('')))
++foo(vim.schedule_wrap(function()
++  print('')
++end))
 END
