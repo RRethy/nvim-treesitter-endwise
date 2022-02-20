@@ -48,6 +48,9 @@ end
 
 local function lacks_end(node, end_text)
     local end_node = node:child(node:child_count() - 1)
+    if end_node == nil then
+        return true
+    end
     if end_node:type() ~= end_text then
         return false
     end
@@ -150,7 +153,12 @@ local function endwise(bufnr)
             if not endable_node or lacks_end(endable_node, end_node_type) then
                 local end_text = metadata.endwise_end_text
                 if metadata.endwise_end_suffix then
-                    end_text = end_text..text_for_range({metadata.endwise_end_suffix:range()})
+                    local suffix = text_for_range({metadata.endwise_end_suffix:range()})
+                    local s, e = vim.regex(metadata.endwise_end_suffix_pattern):match_str(suffix)
+                    if s then
+                        suffix = string.sub(suffix, s+1, e)
+                    end
+                    end_text = end_text..suffix
                 end
                 local endable_node_range = endable_node and {endable_node:range()} or nil
                 add_end_node(indent_node_range, endable_node_range, end_text, metadata.endwise_shiftcount)
@@ -172,11 +180,14 @@ end
 --  vimscript. nil to use endwise_end_text as the node type.
 -- @param endwise_shiftcount number a non-negative number of shifts to indent with,
 --  defaults to 1
+-- @param endwise_end_suffix_pattern string regex pattern to apply onto
+--  endwise_end_suffix, defaults to matching the whole string
 vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, metadata)
     metadata.endwise_end_text = predicate[2]
     metadata.endwise_end_suffix = match[predicate[3]]
     metadata.endwise_end_node_type = predicate[4]
     metadata.endwise_shiftcount = predicate[5] or 1
+    metadata.endwise_end_suffix_pattern = predicate[6] or '^.*$'
 end)
 
 vim.on_key(function(key)

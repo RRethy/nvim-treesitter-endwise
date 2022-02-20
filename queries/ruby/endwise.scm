@@ -11,6 +11,7 @@
 ((unless condition: (_) @cursor) @endable @indent (#endwise! "end"))
 ((case value: (_) @cursor) @endable @indent (#endwise! "end" nil "end" 0))
 ((case) @cursor @endable @indent (#endwise! "end" nil "end" 0))
+((heredoc_beginning) @cursor @endable @indent (#endwise! "" @cursor "heredoc_end" 0 "<<\\~\\?\\zs.*"))
 
 ((ERROR ("module" @indent . [(constant) (scope_resolution)] @cursor)) (#endwise! "end"))
 ((ERROR ("class" @indent . [(constant) (scope_resolution)] @cursor . (superclass)? @cursor)) (#endwise! "end"))

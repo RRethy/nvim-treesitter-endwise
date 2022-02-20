@@ -453,8 +453,8 @@ test "ruby, valueless case stmt", <<~END
 END
 
 test "ruby, this will fail", <<~END
--test "foo" <<~FOO█
-+test "foo" <<~FOO
+-test "foo", <<~FOO█
++test "foo", <<~FOO
 +
 +FOO
 END
