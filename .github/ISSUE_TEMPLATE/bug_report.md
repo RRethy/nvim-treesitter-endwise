@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Steps to reproduce the behavior with a **minimal init.lua**:
+Steps to reproduce the behavior with a **minimal init.lua** (DO NOT INCLUDE PACKER IN A MINIMAL **init.lua**):
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
