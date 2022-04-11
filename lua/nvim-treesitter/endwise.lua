@@ -1,17 +1,10 @@
 local parsers = require('nvim-treesitter.parsers')
 local queries = require('nvim-treesitter.query')
 local ts_utils = require('nvim-treesitter.ts_utils')
-local ffi = require('ffi')
 
 local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
-ffi.cdef [[
-/// @returns[allocated] mode string
-char *get_mode(void);
-/// free() wrapper that delegates to the backing memory manager
-void xfree(void *ptr);
-]]
 
 local function tabstr()
     if vim.bo.expandtab then
@@ -192,17 +185,7 @@ end)
 
 vim.on_key(function(key)
     if key ~= "\r" then return end
-    -- vim.fn.mode() may fail if we call it outside schedule_wrap. To get
-    -- around this, we call Neovim internal C functions directly.
-    -- This is needed because a user can have press <CR> in a different mode
-    -- (e.g. command-line mode) which then puts them into insert mode and
-    -- triggers <CR>, this will trigger on_key twice and the callback to
-    -- schedule_wrap will both trigger while in insert mode, this will lead to
-    -- two `end` tokens added. We check the mode before we schedule_wrap our
-    -- callback to ensure we only react to insert mode <CR>.
-    if ffi.string(ffi.gc(ffi.C.get_mode(), ffi.C.xfree)) ~= 'i' then
-        return
-    end
+    if vim.api.nvim_get_mode().mode ~= 'i' then return end
     vim.schedule_wrap(function()
         local bufnr = vim.fn.bufnr()
         if not tracking[bufnr] then return end
