@@ -77,6 +77,7 @@ local function add_end_node(indent_node_range, endable_node_range, end_text, shi
     local line = vim.fn.getline(crow)
     local trailing_cursor_text, trailing_end_text
     if endable_node_range == nil or crow - 1 < endable_node_range[3] then
+        -- TODO: check for alphanumeric character to add as end_text like below
         _, trailing_cursor_text = strip_leading_whitespace(line)
         trailing_end_text = ""
     elseif crow - 1 == endable_node_range[3] then
