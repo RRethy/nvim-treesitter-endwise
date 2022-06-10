@@ -3,6 +3,7 @@
 ((while_loop condition: (_) @cursor) @indent (#endwise! "endwhile"))
 ((function_definition "function" @indent (function_declaration parameters: (_) @cursor) . ["abort" "closure" "dict" "range"]* @cursor) @endable (#endwise! "end" @indent "endfunction"))
 ((try_statement "try" @cursor) @endable @indent (#endwise! "endtry"))
+((augroup_statement (augroup_name) @cursor (#not-match? @cursor "(END|end)")) @indent (#endwise! "augroup END"))
 
 ((ERROR ("if" @indent . (_) @cursor)) (#endwise! "endif"))
 ((ERROR ("for" @indent . (_) . "in" . (_) @cursor)) (#endwise! "endfor"))

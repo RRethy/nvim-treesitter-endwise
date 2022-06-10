@@ -173,3 +173,10 @@ test "vim, global function has dynamic end text", <<~END
 +  
 +endfun
 END
+
+test "vim, augroup", <<~END
+-augroup foo█
++augroup foo
++  
++augroup END
+END
