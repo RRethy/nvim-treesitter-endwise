@@ -131,8 +131,8 @@ test "ruby, subtree, module works", <<~END
 END
 
 test "ruby, subtree, class works", <<~END
--module Foo█
-+module Foo
+-class Foo█
++class Foo
 +  
 +end
 END
@@ -163,10 +163,10 @@ test "ruby, sequence, module works", <<~END
 END
 
 test "ruby, sequence, class works", <<~END
--module Foo█
+-class Foo█
 -def foo
 -end
-+module Foo
++class Foo
 +  
 +end
 +def foo
@@ -457,4 +457,40 @@ test "ruby, heredoc", <<~END
 +test "foo", <<~FOO
 +
 +FOO
+END
+
+test "ruby, sequence, superclass works", <<~END
+-class Foo < self█
+-def foo
+-end
++class Foo < self
++  
++end
++def foo
++end
+END
+
+test "ruby, subtree, superclass works", <<~END
+-class Foo < self█
++class Foo < self
++  
++end
+END
+
+test "ruby, sequence, singleton class", <<~END
+-class << self█
+-def foo
+-end
++class << self
++  
++end
++def foo
++end
+END
+
+test "ruby, subtree, singleton class", <<~END
+-class << self█
++class << self
++  
++end
 END
