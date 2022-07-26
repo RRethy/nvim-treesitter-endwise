@@ -188,6 +188,22 @@ test "lua, mix trailing text that belongs to parent and endable node", <<~END
 +end))
 END
 
+test "lua, issue #19", <<~END
+-if true then
+-  print('true')
+-elseif true then█
+-else
+-  print('false')
+-end
++if true then
++  print('true')
++elseif true then
++  
++else
++  print('false')
++end
+END
+
 # test "lua, weird interaction with autopairs", <<~END
 # +foo(function()█)
 # +foo.bar.baz('foo', {
