@@ -204,35 +204,35 @@ test "lua, issue #19", <<~END
 +end
 END
 
-# test "lua, weird interaction with autopairs", <<~END
-# +foo(function()█)
-# +foo.bar.baz('foo', {
-# +    foo = bar,
-# +    baz = 'bin',
-# +})
-# +foo.bar.baz('foo', {
-# +    foo = bar,
-# +    baz = 'bin',
-# +    callback = function()
-# +        a.b.c = 2
-# +        a.b.c = 2
-# +        a.b.c = 2
-# +    end,
-# +})
-# -foo(function()
-# -  
-# -end)
-# -foo.bar.baz('foo', {
-# -    foo = bar,
-# -    baz = 'bin',
-# -})
-# -foo.bar.baz('foo', {
-# -    foo = bar,
-# -    baz = 'bin',
-# -    callback = function()
-# -        a.b.c = 2
-# -        a.b.c = 2
-# -        a.b.c = 2
-# -    end,
-# -})
-# END
+test "lua, trailing non-alphanumeric text", <<~END
+-foo(function()█)
+-foo.bar.baz('foo', {
+-    foo = bar,
+-    baz = 'bin',
+-})
+-foo.bar.baz('foo', {
+-    foo = bar,
+-    baz = 'bin',
+-    callback = function()
+-        a.b.c = 2
+-        a.b.c = 2
+-        a.b.c = 2
+-    end,
+-})
++foo(function()
++  
++end)
++foo.bar.baz('foo', {
++    foo = bar,
++    baz = 'bin',
++})
++foo.bar.baz('foo', {
++    foo = bar,
++    baz = 'bin',
++    callback = function()
++        a.b.c = 2
++        a.b.c = 2
++        a.b.c = 2
++    end,
++})
+END
