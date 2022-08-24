@@ -236,3 +236,7 @@ test "lua, trailing non-alphanumeric text", <<~END
 +    end,
 +})
 END
+
+# test "todo", <<~END
+# vim.keymap.set('n', '<a-g>', function()█ telescope_builtin.live_grep)
+# END
