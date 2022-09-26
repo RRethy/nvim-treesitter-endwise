@@ -58,7 +58,7 @@ test "elixir, valid syntax is no-op", <<~END
 -defmodule Foo do█
 -end
 +defmodule Foo do
-+  
++
 +end
 END
 
