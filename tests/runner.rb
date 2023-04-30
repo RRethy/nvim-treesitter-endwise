@@ -8,6 +8,7 @@ def config(opts)
   @config = {
     extension: "rb",
     overrides: "",
+    command: "ExecuteCR"
   }.merge(opts)
 end
 
@@ -37,15 +38,18 @@ def test(description, testcase)
     crow, ccol = get_cursor_pos(input)
     input = input.gsub(CURSOR, "")
     File.write(input_fname, input)
-    system("nvim", "-u", BASE_INIT_LUA, "+#{crow+1}", "-S", overrides, input_fname, "-c", "lua ExecuteCR(#{ccol-1})")
+    command = @config[:command]
+    system("nvim", "--headless", "-u", BASE_INIT_LUA, "+#{crow+1}", "-S", overrides, input_fname, "-c", "lua #{command}(#{ccol-1})")
     got = File.read(input_fname)
     if got != expected
+      puts ""
       puts "\e[31mFailed\e[0m: #{description}"
       puts "\e[34mInput\e[0m:", input.gsub(/\t/, "<tab>")
       puts "\e[34mGot\e[0m:", got.gsub(/\t/, "<tab>")
       puts "\e[34mExpected:\e[0m", expected.gsub(/\t/, "<tab>")
+      puts "\e[31m======\e[0m"
     else
-      puts "\e[32mSuccess\e[0m"
+      print "\e[32m.\e[0m"
     end
   end
 end
@@ -54,3 +58,5 @@ Dir.glob("#{ENDWISE_DIR}/tests/endwise/*.rb").each do |fname|
   @config = nil
   eval(File.read(fname))
 end
+
+puts ""

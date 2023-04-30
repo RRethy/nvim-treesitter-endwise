@@ -95,8 +95,8 @@ local function add_end_node(indent_node_range, endable_node_range, end_text, shi
 
     local cursor_indentation = indentation .. string.rep(tabstr(), shiftcount)
 
-    vim.fn.append(crow, indentation .. end_text .. trailing_end_text)
     vim.fn.setline(crow, cursor_indentation .. trailing_cursor_text)
+    vim.fn.append(crow, indentation .. end_text .. trailing_end_text)
     vim.fn.cursor(crow, #cursor_indentation + 1)
 end
 
