@@ -1,5 +1,5 @@
 config({
-  extension: "lua",
+  extension: "fish",
   overrides: <<~INIT_LUA
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 2
