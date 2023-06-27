@@ -5,7 +5,7 @@
 ((switch_statement (_) @cursor) @endable @indent (#endwise! "end"))
 ((if_statement condition: (_) @cursor) @endable @indent (#endwise! "end"))
 
-((ERROR ("function" . (_)* @cursor) @indent) (#endwise! "end" ))
+((ERROR ("function" . (_)+ @cursor) @indent) (#endwise! "end" ))
 ((ERROR ("while" . (_) @cursor) @indent) (#endwise! "end"))
 ((ERROR ("for" . (_) . "in" . (_) @cursor) @indent) (#endwise! "end"))
 ((ERROR ("begin" @cursor) @indent) (#endwise! "end"))
