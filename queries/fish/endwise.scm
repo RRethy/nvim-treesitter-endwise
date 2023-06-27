@@ -1,4 +1,4 @@
-((function_definition name: (_) @cursor) @endable @indent (#endwise! "end" ))
+((function_definition name: (_) . (_)* @cursor) @endable @indent (#endwise! "end" ))
 ((while_statement condition: (_) @cursor) @endable @indent (#endwise! "end"))
 ((for_statement variable: (_) value: (_) @cursor) @endable @indent (#endwise! "end"))
 ((begin_statement (_) @cursor) @endable @indent (#endwise! "end"))
