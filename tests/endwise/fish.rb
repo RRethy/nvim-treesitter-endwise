@@ -21,8 +21,8 @@ test "fish, global function with options", <<~END
 END
 
 test "fish, while loop", <<~END
--while true do█
-+while true do
+-while true█
++while true
 +  
 +end
 END
@@ -35,8 +35,8 @@ test "fish, for loop generic clause", <<~END
 END
 
 test "fish, if stmt", <<~END
--if foo then█
-+if foo then
+-if foo█
++if foo
 +  
 +end
 END
