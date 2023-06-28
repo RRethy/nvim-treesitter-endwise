@@ -14,7 +14,7 @@ test "fish, global function", <<~END
 END
 
 test "fish, global function with options", <<~END
--function foo --on-signal WINCH █
+-function foo --on-signal WINCH█
 +function foo --on-signal WINCH
 +  
 +end
