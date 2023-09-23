@@ -494,3 +494,10 @@ test "ruby, subtree, singleton class", <<~END
 +  
 +end
 END
+
+test "ruby, inside function params", <<~END
+-def foo(█)
++def foo(
++  )
++end
+END
