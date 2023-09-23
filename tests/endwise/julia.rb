@@ -275,12 +275,13 @@ test "julia, if, predicate", <<~END
 +end
 END
 
-test "julia, if, expression 1", <<~END
--if 1 + 1 == 2█
-+if 1 + 1 == 2
-+  
-+end
-END
+# broken due to a bug in ts parser https://github.com/tree-sitter/tree-sitter-julia/issues/117
+# test "julia, if, expression 1", <<~END
+# -if 1 + 1 == 2█
+# +if 1 + 1 == 2
+# +  
+# +end
+# END
 
 test "julia, if, expression 2", <<~END
 -if 2 == 1 + 1█
@@ -590,12 +591,13 @@ test "julia, while, predicate", <<~END
 +end
 END
 
-test "julia, while, expression 1", <<~END
--while 1 + 1 == 2█
-+while 1 + 1 == 2
-+  
-+end
-END
+# broken due to a bug in ts parser https://github.com/tree-sitter/tree-sitter-julia/issues/117
+# test "julia, while, expression 1", <<~END
+# -while 1 + 1 == 2█
+# +while 1 + 1 == 2
+# +  
+# +end
+# END
 
 test "julia, while, expression 2", <<~END
 -while 2 == 1 + 1█
