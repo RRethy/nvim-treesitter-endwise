@@ -5,6 +5,7 @@ local ts_utils = require('nvim-treesitter.ts_utils')
 local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
+M.namespace = vim.api.nvim_create_namespace('treesitter-endwise')
 
 local function tabstr()
     if vim.bo.expandtab then
@@ -199,7 +200,7 @@ vim.on_key(function(key)
         endwise(bufnr)
         vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
     end)()
-end, nil)
+end, M.namespace)
 
 function M.attach(bufnr)
     tracking[bufnr] = true
