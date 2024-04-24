@@ -53,49 +53,51 @@
  (#endwise! "end"))
 
 ((ERROR "let" @cursor @indent
-  [(identifier) (named_field) (let_binding)]? @cursor @indent .
+  [(identifier) (let_binding) (assignment)]? @cursor @indent .
  )
  (#endwise! "end"))
 
-((function_definition
-   name: (_)? @cursor
-   parameters: (parameter_list)? @cursor
-   return_type: (identifier)? @cursor
+((function_definition (signature
+   [(identifier) (call_expression)] @cursor
+   return_type: (_)? @cursor
    (where_clause)? @cursor
- ) @indent @endable
+ )) @indent @endable
  (#endwise! "end"))
 
-((ERROR "function" @indent
-   name: (_)? @cursor
-   parameters: (parameter_list)? @cursor
-   return_type: (identifier)? @cursor
+((ERROR "function" @indent . (signature
+   [(identifier) (call_expression)] @cursor
+   return_type: (_)? @cursor
    (where_clause)? @cursor
- )
+ ))
  (#endwise! "end"))
 
 ; anonymous function
-((ERROR "function" @indent
-   (parameter_list) @cursor
+((function_definition (signature
+   (argument_list) @cursor
    (where_clause)? @cursor
- )
+ )) @indent @endable
+ (#endwise! "end"))
+
+((ERROR "function" @indent . (signature 
+   (argument_list) @cursor
+   (where_clause)? @cursor
+ ))
  (#endwise! "end"))
 
 ((macro_definition
-   name: (_) @cursor
-   parameters: (parameter_list)? @cursor
+   (signature [(identifier) (call_expression)]) @cursor
  ) @indent @endable
  (#endwise! "end"))
 
-((ERROR "macro" @indent
-   . (_) @cursor
-   . (parameter_list)? @cursor
+((ERROR "macro" @indent .
+   (signature [(identifier) (call_expression)]) @cursor
  )
  (#endwise! "end"))
 
-((do_clause ["do" (parameter_list)] @cursor) @indent @endable
+((do_clause ["do" (argument_list)] @cursor) @indent @endable
  (#endwise! "end"))
 
-((ERROR ["do" (parameter_list)] @cursor @indent)
+((ERROR ["do" (argument_list)] @cursor @indent)
  (#endwise! "end"))
 
 ((compound_statement "begin" @cursor) @endable @indent
