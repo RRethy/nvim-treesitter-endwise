@@ -79,11 +79,20 @@ test "julia, module, nested double 2", <<~END
 +end
 END
 
-test "julia, module, incomplete", <<~END
+test "julia, module, incomplete 1", <<~END
 -module Foo
 -  baremodule Bar█
 +module Foo
 +  baremodule Bar
++    
++  end
+END
+
+test "julia, module, incomplete 2", <<~END
+-baremodule Foo
+-  module Bar█
++baremodule Foo
++  module Bar
 +    
 +  end
 END
@@ -179,11 +188,11 @@ END
 
 test "julia, struct, incomplete", <<~END
 -mutable struct Foo
--struct Bar{T <: Int} <: Baz{T}█
+-  struct Bar{T <: Int} <: Baz{T}█
 +mutable struct Foo
-+struct Bar{T <: Int} <: Baz{T}
-+  
-+end
++  struct Bar{T <: Int} <: Baz{T}
++    
++  end
 END
 
 ################################################## 
@@ -243,11 +252,20 @@ test "julia, quote, nested double 2", <<~END
 +end
 END
 
-test "julia, quote, incomplete", <<~END
+test "julia, quote, incomplete 1", <<~END
 -quote
 -  x = quote█
 +quote
 +  x = quote
++    
++  end
+END
+
+test "julia, quote, incomplete 2", <<~END
+-x = quote
+-  quote█
++x = quote
++  quote
 +    
 +  end
 END
@@ -274,6 +292,12 @@ test "julia, if, predicate", <<~END
 +  
 +end
 END
+
+# test "julia, if, predicate, noop", <<~END
+# -if pred(█)
+# +if pred(
+# +  )
+# END
 
 # broken due to a bug in ts parser https://github.com/tree-sitter/tree-sitter-julia/issues/117
 # test "julia, if, expression 1", <<~END
@@ -500,6 +524,19 @@ test "julia, for loop, simple", <<~END
 +end
 END
 
+test "julia, for loop, function", <<~END
+-for i in f()█
++for i in f()
++  
++end
+END
+
+# test "julia, for loop, noop", <<~END
+# -for i in f(█)
+# +for i in f(
+# +  )
+# END
+
 test "julia, for loop, double", <<~END
 -for i in 1:10, j = 1:10█
 +for i in 1:10, j = 1:10
@@ -530,15 +567,15 @@ test "julia, for loop, nested 2", <<~END
 END
 
 test "julia, for loop, nested double 1", <<~END
--for i in 1:10, j in list1
+-for i in 1:10, j in f()
 -  for k in 1:10
 -  end
--  for (l, m) in list2█
+-  for (l, m) in list█
 -end
-+for i in 1:10, j in list1
++for i in 1:10, j in f()
 +  for k in 1:10
 +  end
-+  for (l, m) in list2
++  for (l, m) in list
 +    
 +  end
 +end
@@ -561,9 +598,9 @@ END
 
 test "julia, for loop, incomplete", <<~END
 -for i ∈ 1:10
--  for j = 1:10, i in list█
+-  for j = 1:10, i in f()█
 +for i ∈ 1:10
-+  for j = 1:10, i in list
++  for j = 1:10, i in f()
 +    
 +  end
 END
@@ -590,6 +627,12 @@ test "julia, while, predicate", <<~END
 +  
 +end
 END
+
+# test "julia, while, predicate, noop", <<~END
+# -while pred(█)
+# +while pred(
+# +  )
+# END
 
 # broken due to a bug in ts parser https://github.com/tree-sitter/tree-sitter-julia/issues/117
 # test "julia, while, expression 1", <<~END
@@ -642,14 +685,14 @@ END
 test "julia, while, nested double 2", <<~END
 -while x < 10
 -  while 2 == 1 + 1█
--  while y < 20
+-  while y < f()
 -  end
 -end
 +while x < 10
 +  while 2 == 1 + 1
 +    
 +  end
-+  while y < 20
++  while y < f()
 +  end
 +end
 END
@@ -686,6 +729,19 @@ test "julia, let, with assignment", <<~END
 +end
 END
 
+test "julia, let, function", <<~END
+-let x = f()█
++let x = f()
++  
++end
+END
+
+# test "julia, let, function, noop", <<~END
+# -let x = f(█)
+# +let x = f(
+# +  )
+# END
+
 test "julia, let, nested 1", <<~END
 -let z
 -  let█
@@ -698,10 +754,10 @@ test "julia, let, nested 1", <<~END
 END
 
 test "julia, let, nested 2", <<~END
--let x = 1, y, z
+-let x = f(), y, z
 -  let a█
 -end
-+let x = 1, y, z
++let x = f(), y, z
 +  let a
 +    
 +  end
@@ -712,12 +768,12 @@ test "julia, let, nested double 1", <<~END
 -let x = 1, y, z
 -  let
 -  end
--  let a, b = 1, c█
+-  let a, b = 1, c = f()█
 -end
 +let x = 1, y, z
 +  let
 +  end
-+  let a, b = 1, c
++  let a, b = 1, c = f()
 +    
 +  end
 +end
@@ -726,14 +782,14 @@ END
 test "julia, let, nested double 2", <<~END
 -let x = 1, y, z
 -  let a, b = 1, c█
--  let t, u=1, v=1
+-  let t, u = f(), v = 1
 -  end
 -end
 +let x = 1, y, z
 +  let a, b = 1, c
 +    
 +  end
-+  let t, u=1, v=1
++  let t, u = f(), v = 1
 +  end
 +end
 END
@@ -748,12 +804,6 @@ test "julia, let, incomplete", <<~END
 END
 
 ##################################################
-
-test "julia, function, noop within brackets", <<~END
--function f(█)
-+function f(
-+)
-END
 
 test "julia, function, empty function", <<~END
 -function f█
@@ -776,6 +826,11 @@ test "julia, function, simple", <<~END
 +end
 END
 
+# test "julia, function, noop", <<~END
+# -function f(█)
+# +function f(
+# +)
+# END
 
 test "julia, function, return type", <<~END
 -function foo(x::Any, y::Int)::Int8█
@@ -882,6 +937,12 @@ test "julia, macro, empty macro", <<~END
 +end
 END
 
+# test "julia, macro, noop within brackets", <<~END
+# -macro f(█)
+# +macro f(
+# +  )
+# END
+
 test "julia, macro, constant", <<~END
 -macro f()█
 +macro f()
@@ -948,11 +1009,20 @@ test "julia, macro, nested double 2", <<~END
 +end
 END
 
-test "julia, macro, incomplete", <<~END
+test "julia, macro, incomplete 1", <<~END
 -macro f(a, b, c)
 -  macro g█
 +macro f(a, b, c)
 +  macro g
++    
++  end
+END
+
+test "julia, macro, incomplete 2", <<~END
+-macro f()
+-  macro g(a, b, c)█
++macro f()
++  macro g(a, b, c)
 +    
 +  end
 END
@@ -1142,4 +1212,3 @@ test "julia, begin, nested double 2", <<~END
 +  end
 +end
 END
-
