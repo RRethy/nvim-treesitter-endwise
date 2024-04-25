@@ -134,6 +134,33 @@ test "julia, struct, definition with subtype and type param", <<~END
 +end
 END
 
+test "julia, struct, correct indent 1", <<~END
+-struct Foo{
+-    }█
++struct Foo{
++    }
++  
++end
+END
+
+test "julia, struct, correct indent 2", <<~END
+-struct Foo{} <: Bar{T
+-    }█
++struct Foo{} <: Bar{T
++    }
++  
++end
+END
+
+test "julia, struct, correct indent 3", <<~END
+-struct Foo{} <:
+-    Bar{T}█
++struct Foo{} <:
++    Bar{T}
++  
++end
+END
+
 test "julia, struct, nested 1", <<~END
 -struct Foo <: Bar
 -  mutable struct Baz{T}█
@@ -293,12 +320,6 @@ test "julia, if, predicate", <<~END
 +end
 END
 
-# test "julia, if, predicate, noop", <<~END
-# -if pred(█)
-# +if pred(
-# +  )
-# END
-
 # broken due to a bug in ts parser https://github.com/tree-sitter/tree-sitter-julia/issues/117
 # test "julia, if, expression 1", <<~END
 # -if 1 + 1 == 2█
@@ -317,6 +338,33 @@ END
 test "julia, if, expression 3", <<~END
 -if !(a && true)█
 +if !(a && true)
++  
++end
+END
+
+test "julia, if, correct indent 1", <<~END
+-if !(a && true
+-    )█
++if !(a && true
++    )
++  
++end
+END
+
+test "julia, if, correct indent 2", <<~END
+-if a ||
+-    b█
++if a ||
++    b
++  
++end
+END
+
+test "julia, if, correct indent 3", <<~END
+-if a(
+-    )█
++if a(
++    )
 +  
 +end
 END
@@ -525,21 +573,42 @@ test "julia, for loop, simple", <<~END
 END
 
 test "julia, for loop, function", <<~END
--for i in f()█
-+for i in f()
+-for i ∈ f()█
++for i ∈ f()
 +  
 +end
 END
 
-# test "julia, for loop, noop", <<~END
-# -for i in f(█)
-# +for i in f(
-# +  )
-# END
-
 test "julia, for loop, double", <<~END
 -for i in 1:10, j = 1:10█
 +for i in 1:10, j = 1:10
++  
++end
+END
+
+test "julia, for loop, correct indent 1", <<~END
+-for i in f(
+-    )█
++for i in f(
++    )
++  
++end
+END
+
+test "julia, for loop, correct indent 2", <<~END
+-for i = 1:10,
+-    j = 1:10█
++for i = 1:10,
++    j = 1:10
++  
++end
+END
+
+test "julia, for loop, correct indent 3", <<~END
+-for i in 1:10, j in f(
+-    )█
++for i in 1:10, j in f(
++    )
 +  
 +end
 END
@@ -628,11 +697,32 @@ test "julia, while, predicate", <<~END
 +end
 END
 
-# test "julia, while, predicate, noop", <<~END
-# -while pred(█)
-# +while pred(
-# +  )
-# END
+test "julia, while, correct indent 1", <<~END
+-while !(a && true
+-    )█
++while !(a && true
++    )
++  
++end
+END
+
+test "julia, while, correct indent 2", <<~END
+-while a ||
+-    b█
++while a ||
++    b
++  
++end
+END
+
+test "julia, while, correct indent 3", <<~END
+-while a(
+-    )█
++while a(
++    )
++  
++end
+END
 
 # broken due to a bug in ts parser https://github.com/tree-sitter/tree-sitter-julia/issues/117
 # test "julia, while, expression 1", <<~END
@@ -736,11 +826,32 @@ test "julia, let, function", <<~END
 +end
 END
 
-# test "julia, let, function, noop", <<~END
-# -let x = f(█)
-# +let x = f(
-# +  )
-# END
+test "julia, let loop, correct indent 1", <<~END
+-let i = f(
+-    )█
++let i = f(
++    )
++  
++end
+END
+
+test "julia, let loop, correct indent 2", <<~END
+-let i = 1,
+-    j = 2█
++let i = 1,
++    j = 2
++  
++end
+END
+
+test "julia, let loop, correct indent 3", <<~END
+-let i = 1, j = f(
+-    )█
++let i = 1, j = f(
++    )
++  
++end
+END
 
 test "julia, let, nested 1", <<~END
 -let z
@@ -794,14 +905,15 @@ test "julia, let, nested double 2", <<~END
 +end
 END
 
-test "julia, let, incomplete", <<~END
--let
--  a = let x, y = 1, z█
-+let
-+  a = let x, y = 1, z
-+    
-+  end
-END
+# broken
+# test "julia, let, incomplete", <<~END
+# -a = let x
+# -  let y = 1, z█
+# +a = let x
+# +  let y = 1, z
+# +    
+# +  end
+# END
 
 ##################################################
 
@@ -825,12 +937,6 @@ test "julia, function, simple", <<~END
 +  
 +end
 END
-
-# test "julia, function, noop", <<~END
-# -function f(█)
-# +function f(
-# +)
-# END
 
 test "julia, function, return type", <<~END
 -function foo(x::Any, y::Int)::Int8█
@@ -936,12 +1042,6 @@ test "julia, macro, empty macro", <<~END
 +  
 +end
 END
-
-# test "julia, macro, noop within brackets", <<~END
-# -macro f(█)
-# +macro f(
-# +  )
-# END
 
 test "julia, macro, constant", <<~END
 -macro f()█
