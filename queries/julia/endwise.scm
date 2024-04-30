@@ -35,10 +35,10 @@
 ((ERROR "try" @indent @cursor)
  (#endwise! "end"))
 
-((for_statement (for_binding) @cursor) @indent @endable
+((for_statement . (for_binding)* . (for_binding) @cursor) @indent @endable
  (#endwise! "end"))
 
-((ERROR "for" (for_binding) @cursor @indent .)
+((ERROR "for" @indent . (for_binding)* . (for_binding) @cursor)
  (#endwise! "end"))
 
 ((while_statement condition: (_) @cursor) @indent @endable
@@ -53,7 +53,7 @@
  (#endwise! "end"))
 
 ((ERROR "let" @cursor @indent
-  [(identifier) (let_binding) (assignment)]? @cursor @indent .
+  [(identifier) (let_binding) (assignment)]? @cursor
  )
  (#endwise! "end"))
 
