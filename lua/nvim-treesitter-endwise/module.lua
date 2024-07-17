@@ -201,11 +201,11 @@ vim.on_key(function(key)
     end)()
 end, nil)
 
-function M.attach(bufnr)
+function M.attach(bufnr, _)
     tracking[bufnr] = true
 end
 
-function M.detach(bufnr)
+function M.detach(bufnr, _)
     tracking[bufnr] = false
 end
 
