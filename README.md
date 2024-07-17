@@ -10,11 +10,7 @@ https://user-images.githubusercontent.com/21000943/150613732-442589e2-6b08-4b14-
 
 ```lua
 -- Requires nvim-treesitter installed
-require('nvim-treesitter.configs').setup {
-    endwise = {
-        enable = true,
-    },
-}
+require("nvim-treesitter-endwise").setup()
 ```
 
 This is a simple plugin that helps to end certain structures automatically. In Ruby, this means adding end after if, do, def, etc. This even works for languages nested inside other, such as Markdown with a Lua code block!
