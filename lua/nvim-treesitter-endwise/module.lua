@@ -6,6 +6,35 @@ local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
 
+local function is_supported(lang)
+    local seen = {}
+    local function has_nested_endwise_language(nested_lang)
+        if not parsers.has_parser(nested_lang) then
+            return false
+        end
+        if queries.has_query_files(nested_lang, "endwise") then
+            return true
+        end
+        if seen[nested_lang] then
+            return false
+        end
+        seen[nested_lang] = true
+
+        if queries.has_query_files(nested_lang, "injections") then
+            local query = queries.get_query(nested_lang, "injections")
+            for _, capture in ipairs(query.info.captures) do
+                if capture == "language" or has_nested_endwise_language(capture) then
+                    return true
+                end
+            end
+        end
+
+        return false
+    end
+
+    return has_nested_endwise_language(lang)
+end
+
 local function tabstr()
     if vim.bo.expandtab then
         return string.rep(" ", vim.fn.shiftwidth())
@@ -201,8 +230,11 @@ vim.on_key(function(key)
     end)()
 end, nil)
 
-function M.attach(bufnr, _)
-    tracking[bufnr] = true
+function M.attach(bufnr, lang)
+    lang = lang or parsers.get_buf_lang(bufnr)
+    if is_supported(lang) then
+        tracking[bufnr] = true
+    end
 end
 
 function M.detach(bufnr, _)
