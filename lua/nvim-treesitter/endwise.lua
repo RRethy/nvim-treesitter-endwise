@@ -100,6 +100,7 @@ local function add_end_node(indent_node_range, endable_node_range, end_text, shi
     vim.fn.cursor(crow, #cursor_indentation + 1)
 end
 
+local nvim_supports_quantified_captures = vim.version() > vim.version.parse("0.10.0")
 local function endwise(bufnr)
     local lang = parsers.get_buf_lang(bufnr)
     if not lang then
@@ -136,6 +137,9 @@ local function endwise(bufnr)
     for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1) do
         local indent_node, cursor_node, endable_node
         for id, node in pairs(match) do
+            if nvim_supports_quantified_captures then
+                node = node[#node]
+            end
             if query.captures[id] == 'indent' then
                 indent_node = node
             elseif query.captures[id] == 'cursor' then
