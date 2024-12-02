@@ -1223,14 +1223,15 @@ test "julia, do, nested double 2", <<~END
 +end
 END
 
-test "julia, do, incomplete", <<~END
--f(1:9) do (a, b)
--  f(1:9) do█
-+f(1:9) do (a, b)
-+  f(1:9) do
-+    
-+  end
-END
+# broken, see https://github.com/tree-sitter/tree-sitter-julia/issues/162
+# test "julia, do, incomplete", <<~END
+# -f(1:9) do (a, b)
+# -  f(1:9) do█
+# +f(1:9) do (a, b)
+# +  f(1:9) do
+# +    
+# +  end
+# END
 
 ################################################## 
 
