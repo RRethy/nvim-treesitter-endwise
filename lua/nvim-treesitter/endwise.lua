@@ -6,7 +6,7 @@ local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
 -- compatibility shim for breaking change on nightly/0.11
-local opts = vim.fn.has("nvim-0.10") == 1 and { force = true, all = true } or true
+local opts = vim.fn.has("nvim-0.10") == 1 and { force = true, all = false } or true
 
 local function tabstr()
     if vim.bo.expandtab then
