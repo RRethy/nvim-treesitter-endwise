@@ -4,16 +4,12 @@
  (#endwise! "end"))
 
 ((struct_definition
-   name: (_) @cursor
-   (type_parameter_list)? @cursor
-   (type_clause)? @cursor
+   (type_head) @cursor
  ) @indent @endable
  (#endwise! "end"))
 
 ((ERROR "mutable"? "struct" @indent
-   . (identifier) @cursor
-   . (curly_expression)? @cursor
-   . (type_clause)? @cursor
+   . (type_head) @cursor
  )
  (#endwise! "end"))
 
@@ -58,29 +54,25 @@
  (#endwise! "end"))
 
 ((function_definition (signature
-   [(identifier) (call_expression)] @cursor
-   return_type: (_)? @cursor
-   (where_clause)? @cursor
+   [(identifier) (call_expression) (typed_expression) (where_expression)] @cursor
  )) @indent @endable
  (#endwise! "end"))
 
 ((ERROR "function" @indent . (signature
-   [(identifier) (call_expression)] @cursor
-   return_type: (_)? @cursor
-   (where_clause)? @cursor
+   [(identifier) (call_expression) (typed_expression) (where_expression)] @cursor
  ))
  (#endwise! "end"))
 
 ; anonymous function
 ((function_definition (signature
    (argument_list) @cursor
-   (where_clause)? @cursor
+   (where_expression)? @cursor
  )) @indent @endable
  (#endwise! "end"))
 
 ((ERROR "function" @indent . (signature 
    (argument_list) @cursor
-   (where_clause)? @cursor
+   (where_expression)? @cursor
  ))
  (#endwise! "end"))
 
@@ -100,7 +92,7 @@
 ((ERROR ["do" (argument_list)] @cursor @indent)
  (#endwise! "end"))
 
-((compound_statement "begin" @cursor) @endable @indent
+((compound_statement "begin" @cursor) @indent @endable
  (#endwise! "end"))
 
 ((ERROR "begin" @cursor @indent)
@@ -111,5 +103,5 @@
  (#endwise! "end"))
 
 ; eof variant
-((identifier) @cursor @indent (ERROR "\n")
+((identifier) @cursor @indent (ERROR)
  (#endwise! "end"))
