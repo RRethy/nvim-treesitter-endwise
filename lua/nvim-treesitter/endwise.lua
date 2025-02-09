@@ -138,7 +138,7 @@ local function endwise(bufnr)
     for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1, { all = true }) do
         local indent_node, cursor_node, endable_node
         for id, node in pairs(match) do
-            if vim.fn.has('nvim-0.10') == 1 then
+            if type(node) == 'table' then
                 node = node[#node]
             end
 
