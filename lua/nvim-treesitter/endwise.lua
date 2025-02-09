@@ -5,6 +5,8 @@ local ts_utils = require('nvim-treesitter.ts_utils')
 local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
+-- compatibility shim for breaking change on nightly/0.11
+local opts = vim.fn.has("nvim-0.10") == 1 and { force = true, all = true } or true
 
 local function tabstr()
     if vim.bo.expandtab then
@@ -133,7 +135,7 @@ local function endwise(bufnr)
 
     local range = { root:range() }
 
-    for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1) do
+    for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1, { all = true }) do
         local indent_node, cursor_node, endable_node
         for id, node in pairs(match) do
             if vim.fn.has('nvim-0.10') == 1 then
@@ -191,7 +193,7 @@ vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, 
     metadata.endwise_end_node_type = predicate[4]
     metadata.endwise_shiftcount = predicate[5] or 1
     metadata.endwise_end_suffix_pattern = predicate[6] or '^.*$'
-end, { force = true })
+end, opts)
 
 vim.on_key(function(key)
     if key ~= "\r" then return end
