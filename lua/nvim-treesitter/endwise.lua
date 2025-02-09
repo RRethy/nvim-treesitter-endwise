@@ -187,7 +187,7 @@ vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, 
     metadata.endwise_end_node_type = predicate[4]
     metadata.endwise_shiftcount = predicate[5] or 1
     metadata.endwise_end_suffix_pattern = predicate[6] or '^.*$'
-end)
+end, { force = true })
 
 vim.on_key(function(key)
     if key ~= "\r" then return end
@@ -195,7 +195,7 @@ vim.on_key(function(key)
     vim.schedule_wrap(function()
         local bufnr = vim.fn.bufnr()
         if not tracking[bufnr] then return end
-        vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR') -- Not currently used
+        vim.cmd('doautocmd User PreNvimTreesitterEndwiseCR')  -- Not currently used
         endwise(bufnr)
         vim.cmd('doautocmd User PostNvimTreesitterEndwiseCR') -- Used in tests to know when to exit Neovim
     end)()
