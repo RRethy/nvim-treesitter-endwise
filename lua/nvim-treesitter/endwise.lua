@@ -198,6 +198,9 @@ end, opts)
 vim.on_key(function(key)
     if key ~= "\r" then return end
     if vim.api.nvim_get_mode().mode ~= 'i' then return end
+    if vim.fn.reg_executing() ~= '' or vim.fn.reg_recording() ~= '' then
+        return
+    end
     vim.schedule_wrap(function()
         local bufnr = vim.fn.bufnr()
         if not tracking[bufnr] then return end
