@@ -54,6 +54,9 @@ function M.is_supported(lang)
 
         if queries.has_query_files(nested_lang, 'injections') then
             local query = queries.get_query(nested_lang, 'injections')
+            if not query then
+                return false
+            end
             for _, capture in ipairs(query.info.captures) do
                 if capture == 'language' or has_nested_endwise_language(capture) then
                     return true
