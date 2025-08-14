@@ -1,7 +1,3 @@
-local parsers = require('nvim-treesitter.parsers')
-local queries = require('nvim-treesitter.query')
-local ts_utils = require('nvim-treesitter.ts_utils')
-
 local M = {}
 local indent_regex = vim.regex('\\v^\\s*\\zs\\S')
 local tracking = {}
@@ -103,12 +99,13 @@ local function add_end_node(indent_node_range, endable_node_range, end_text, shi
 end
 
 local function endwise(bufnr)
-    local lang = parsers.get_buf_lang(bufnr)
+    local lang = vim.treesitter.language.get_lang(vim.bo[bufnr].filetype or '')
     if not lang then
         return
     end
 
-    if not parsers.has_parser(lang) then
+    local parser, _ = vim.treesitter.get_parser(bufnr, lang, { error = false })
+    if not parser then
         return
     end
 
@@ -117,18 +114,29 @@ local function endwise(bufnr)
     row = row - 1
     col = col - 1
 
-    local lang_tree = parsers.get_parser(bufnr):language_for_range({ row, col, row, col })
+    local lang_tree = parser:language_for_range({ row, col, row, col })
     lang = lang_tree:lang()
     if not lang then
         return
     end
 
-    local root = ts_utils.get_root_for_position(row, col, lang_tree)
+
+    local node = vim.treesitter.get_node({
+        bufnr = bufnr,
+        lang = lang,
+        pos = { row, col },
+        ignore_injections = true,
+    })
+    if not node then
+        return
+    end
+
+    local root = node:tree():root()
     if not root then
         return
     end
 
-    local query = queries.get_query(lang, 'endwise')
+    local query = vim.treesitter.query.get(lang, 'endwise')
     if not query then
         return
     end

@@ -1,6 +1,3 @@
-local queries = require("nvim-treesitter.query")
-local parsers = require('nvim-treesitter.parsers')
-
 local M = {}
 
 function M.init()
@@ -41,23 +38,24 @@ function M.is_supported(lang)
             return false
         end
 
-        if not parsers.has_parser(nested_lang) then
+        local parser, _ = vim.treesitter.get_parser(0, nested_lang, { error = false })
+        if not parser then
             return false
         end
-        if queries.has_query_files(nested_lang, 'endwise') then
+
+        local query = vim.treesitter.query.get(nested_lang, 'endwise')
+        if query ~= nil then
             return true
         end
+
         if seen[nested_lang] then
             return false
         end
         seen[nested_lang] = true
 
-        if queries.has_query_files(nested_lang, 'injections') then
-            local query = queries.get_query(nested_lang, 'injections')
-            if not query then
-                return false
-            end
-            for _, capture in ipairs(query.info.captures) do
+        local injections_query = vim.treesitter.query.get(nested_lang, 'injections')
+        if injections_query ~= nil then
+            for _, capture in ipairs(injections_query.info.captures) do
                 if capture == 'language' or has_nested_endwise_language(capture) then
                     return true
                 end
