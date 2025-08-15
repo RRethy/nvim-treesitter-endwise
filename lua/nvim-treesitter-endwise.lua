@@ -38,8 +38,8 @@ function M.is_supported(lang)
             return false
         end
 
-        local parser, _ = vim.treesitter.get_parser(0, nested_lang, { error = false })
-        if not parser then
+        local ok, parser = pcall(vim.treesitter.get_parser, 0, nested_lang, { error = false })
+        if not ok or not parser then
             return false
         end
 
