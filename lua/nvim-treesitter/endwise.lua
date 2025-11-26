@@ -109,8 +109,14 @@ local function endwise(bufnr)
         return
     end
 
+    -- Reparse to pick up buffer changes from the Enter key
+    parser:parse()
+
     -- Search up the first the closest non-whitespace text before the cursor
     local row, col = unpack(vim.fn.searchpos('\\S', 'nbW'))
+    if row == 0 then
+        return
+    end
     row = row - 1
     col = col - 1
 
@@ -143,6 +149,9 @@ local function endwise(bufnr)
 
     local range = { root:range() }
 
+    -- Collect all valid matches, then pick the most specific one (smallest cursor range)
+    local valid_matches = {}
+
     for _, match, metadata in query:iter_matches(root, bufnr, range[1], range[3] + 1, { all = true }) do
         local indent_node, cursor_node, endable_node
         for id, node in pairs(match) do
@@ -164,20 +173,34 @@ local function endwise(bufnr)
         if point_in_range(row, col, cursor_node_range) then
             local end_node_type = metadata.endwise_end_node_type or metadata.endwise_end_text
             if not endable_node or lacks_end(endable_node, end_node_type) then
-                local end_text = metadata.endwise_end_text
-                if metadata.endwise_end_suffix then
-                    local suffix = text_for_range({ metadata.endwise_end_suffix:range() })
-                    local s, e = vim.regex(metadata.endwise_end_suffix_pattern):match_str(suffix)
-                    if s then
-                        suffix = string.sub(suffix, s + 1, e)
-                    end
-                    end_text = end_text .. suffix
-                end
-                local endable_node_range = endable_node and { endable_node:range() } or nil
-                add_end_node(indent_node_range, endable_node_range, end_text, metadata.endwise_shiftcount)
-                return
+                -- Calculate cursor range size for specificity comparison
+                local cursor_size = (cursor_node_range[3] - cursor_node_range[1]) * 10000 +
+                                   (cursor_node_range[4] - cursor_node_range[2])
+                table.insert(valid_matches, {
+                    indent_node_range = indent_node_range,
+                    endable_node = endable_node,
+                    metadata = metadata,
+                    cursor_size = cursor_size,
+                })
             end
         end
+    end
+
+    -- Pick the most specific match (smallest cursor range)
+    if #valid_matches > 0 then
+        table.sort(valid_matches, function(a, b) return a.cursor_size < b.cursor_size end)
+        local best = valid_matches[1]
+        local end_text = best.metadata.endwise_end_text
+        if best.metadata.endwise_end_suffix then
+            local suffix = text_for_range({ best.metadata.endwise_end_suffix:range() })
+            local s, e = vim.regex(best.metadata.endwise_end_suffix_pattern):match_str(suffix)
+            if s then
+                suffix = string.sub(suffix, s + 1, e)
+            end
+            end_text = end_text .. suffix
+        end
+        local endable_node_range = best.endable_node and { best.endable_node:range() } or nil
+        add_end_node(best.indent_node_range, endable_node_range, end_text, best.metadata.endwise_shiftcount)
     end
 end
 
