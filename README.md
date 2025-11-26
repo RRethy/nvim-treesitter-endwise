@@ -14,7 +14,7 @@ No configuration is required, just install the plugin and it'll work!
 
 This is a simple plugin that helps to end certain structures automatically. In Ruby, this means adding end after if, do, def, etc. This even works for languages nested inside other, such as Markdown with a Lua code block!
 
-**Supported Languages**: *Ruby*, *Lua*, *Vimscript*, *Bash*, *Elixir*, *Fish*, *Julia*
+**Supported Languages**: *Ruby*, *Lua*, *Vimscript*, *Bash*, *Elixir*, *Fish*, *Julia*, *Crystal*
 
 # Additional Language Support
 
@@ -27,3 +27,4 @@ This is just a rewrite of https://github.com/tpope/vim-endwise to leverage Trees
 Special thanks to
 * [@jasonrhansen](https://www.github.com/jasonrhansen) who added support for injected languages and Vimscript.
 * [@simonmandlik](https://www.github.com/simonmandlik) who added support for Julia.
+* [@omarluq](https://github.com/omarluq) added crystal-lang
