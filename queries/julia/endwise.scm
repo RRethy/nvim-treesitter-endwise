@@ -44,12 +44,12 @@
  (#endwise! "end"))
 
 ((let_statement "let" @cursor
-  [(identifier) (let_binding)]? @cursor
+  [(identifier) (assignment)]? @cursor
  ) @indent @endable
  (#endwise! "end"))
 
 ((ERROR "let" @cursor @indent
-  [(identifier) (let_binding) (assignment)]? @cursor
+  [(identifier) (assignment)]? @cursor
  )
  (#endwise! "end"))
 
