@@ -120,6 +120,9 @@ local function endwise(bufnr)
         return
     end
 
+    if row < 0 or col < 0 then
+        return
+    end
 
     local node = vim.treesitter.get_node({
         bufnr = bufnr,
