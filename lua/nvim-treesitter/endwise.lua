@@ -197,7 +197,13 @@ end
 --  endwise_end_suffix, defaults to matching the whole string
 vim.treesitter.query.add_directive('endwise!', function(match, _, _, predicate, metadata)
     metadata.endwise_end_text = predicate[2]
-    metadata.endwise_end_suffix = match[predicate[3]]
+
+    local end_suffix = match[predicate[3]]
+    if type(end_suffix) == 'table' then
+        end_suffix = end_suffix[#end_suffix]
+    end
+    metadata.endwise_end_suffix = end_suffix
+
     metadata.endwise_end_node_type = predicate[4]
     metadata.endwise_shiftcount = predicate[5] or 1
     metadata.endwise_end_suffix_pattern = predicate[6] or '^.*$'
