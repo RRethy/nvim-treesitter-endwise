@@ -3,6 +3,7 @@ require "tmpdir"
 ENDWISE_DIR = File.expand_path(File.join(__dir__, ".."))
 BASE_INIT_LUA = File.join(ENDWISE_DIR, "tests", "init.lua")
 CURSOR = "█"
+@failed_tests = 0
 
 def config(opts)
   @config = {
@@ -39,9 +40,10 @@ def test(description, testcase)
     input = input.gsub(CURSOR, "")
     File.write(input_fname, input)
     command = @config[:command]
-    system("nvim", "--headless", "-u", BASE_INIT_LUA, "+#{crow+1}", "-S", overrides, input_fname, "-c", "lua #{command}(#{ccol-1})")
+    success = system("nvim", "--headless", "-u", BASE_INIT_LUA, "+#{crow+1}", "-S", overrides, input_fname, "-c", "lua #{command}(#{ccol-1})")
     got = File.read(input_fname)
-    if got != expected
+    if !success || got != expected
+      @failed_tests += 1
       puts ""
       puts "\e[31mFailed\e[0m: #{description}"
       puts "\e[34mInput\e[0m:", input.gsub(/\t/, "<tab>")
@@ -60,3 +62,4 @@ Dir.glob("#{ENDWISE_DIR}/tests/endwise/*.rb").each do |fname|
 end
 
 puts ""
+exit 1 if @failed_tests > 0

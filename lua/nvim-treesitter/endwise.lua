@@ -73,13 +73,18 @@ local function lacks_end(node, end_text)
 end
 
 local function add_end_node(indent_node_range, endable_node_range, end_text, shiftcount, key)
-    local crow = vim.api.nvim_win_get_cursor(0)[1]
+    local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
     local indentation = strip_leading_whitespace(vim.fn.getline(indent_node_range[1] + 1))
 
     local line = vim.fn.getline(crow)
 
     if key == " " then
-        vim.fn.setline(crow, line .. " " .. end_text)
+        local end_col = #line
+        if endable_node_range and endable_node_range[3] == crow - 1 then
+            -- Keep the typed space inside the block and leave parent syntax outside it.
+            end_col = math.max(ccol, endable_node_range[4])
+        end
+        vim.fn.setline(crow, line:sub(1, end_col) .. " " .. end_text .. line:sub(end_col + 1))
         return
     end
 
