@@ -113,6 +113,40 @@ local function add_end_node(indent_node_range, endable_node_range, end_text, shi
     vim.fn.cursor(crow, #cursor_indentation + 1)
 end
 
+local function split_existing_end_node(indent_node_range, endable_node, end_node_type, shiftcount)
+    if endable_node == nil then
+        return false
+    end
+
+    local end_node = endable_node:child(endable_node:child_count() - 1)
+    if end_node == nil or end_node:type() ~= end_node_type or end_node:missing() then
+        return false
+    end
+
+    local crow = unpack(vim.api.nvim_win_get_cursor(0))
+    local end_node_range = { end_node:range() }
+    if end_node_range[1] ~= crow - 1 or end_node_range[3] ~= crow - 1 then
+        return false
+    end
+
+    local line = vim.fn.getline(crow)
+    local before_end = string.sub(line, 1, end_node_range[2])
+    local _, text_before_end = strip_leading_whitespace(before_end)
+    if text_before_end ~= "" then
+        return false
+    end
+
+    local indentation = strip_leading_whitespace(vim.fn.getline(indent_node_range[1] + 1))
+    local cursor_indentation = indentation .. string.rep(tabstr(), shiftcount)
+    local end_line = string.sub(line, end_node_range[2] + 1, -1)
+
+    vim.fn.setline(crow, cursor_indentation)
+    vim.fn.append(crow, indentation .. end_line)
+    vim.fn.cursor(crow, #cursor_indentation + 1)
+
+    return true
+end
+
 local function endwise(bufnr, key)
     local lang = vim.treesitter.language.get_lang(vim.bo[bufnr].filetype or "")
     if not lang then
@@ -190,6 +224,15 @@ local function endwise(bufnr, key)
                 local endable_node_range = endable_node and { endable_node:range() } or nil
                 add_end_node(indent_node_range, endable_node_range, end_text, metadata.endwise_shiftcount, key)
                 return
+            elseif key == "\r" then
+                if split_existing_end_node(
+                    indent_node_range,
+                    endable_node,
+                    end_node_type,
+                    metadata.endwise_shiftcount
+                ) then
+                    return
+                end
             end
         end
     end
