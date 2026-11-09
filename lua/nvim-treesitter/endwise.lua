@@ -140,6 +140,12 @@ local function split_existing_end_node(indent_node_range, endable_node, end_node
     local cursor_indentation = indentation .. string.rep(tabstr(), shiftcount)
     local end_line = string.sub(line, end_node_range[2] + 1, -1)
 
+    if crow > 1 then
+        local previous_line = vim.fn.getline(crow - 1)
+        local trimmed_previous_line = string.gsub(previous_line, "%s+$", "")
+        vim.fn.setline(crow - 1, trimmed_previous_line)
+    end
+
     vim.fn.setline(crow, cursor_indentation)
     vim.fn.append(crow, indentation .. end_line)
     vim.fn.cursor(crow, #cursor_indentation + 1)

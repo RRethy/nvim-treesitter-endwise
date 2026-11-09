@@ -183,14 +183,21 @@ END
 
 test "lua, inline existing end after cursor with leading space", <<~END
 -foo(function() █end)
-+foo(function()#{' '}
++foo(function()
++#{'  '}
++end)
+END
+
+test "lua, inline existing end after cursor with surrounding spaces", <<~END
+-foo(function() █ end)
++foo(function()
 +#{'  '}
 +end)
 END
 
 test "lua, inline existing end after cursor with extra whitespace", <<~END
 -foo(function() █  end)
-+foo(function()#{' '}
++foo(function()
 +#{'  '}
 +end)
 END
