@@ -3,6 +3,11 @@ local indent_regex = vim.regex("\\v^\\s*\\zs\\S")
 local tracking = {}
 -- compatibility shim for breaking change on nightly/0.11
 local opts = vim.fn.has("nvim-0.10") == 1 and { force = true, all = false } or true
+local backspace_key = vim.api.nvim_replace_termcodes("<BS>", true, false, true)
+
+local function is_backspace_key(key)
+    return key == backspace_key or key == string.char(8) or key == string.char(127)
+end
 
 local function tabstr()
     if vim.bo.expandtab then
@@ -113,13 +118,22 @@ local function add_end_node(indent_node_range, endable_node_range, end_text, shi
     vim.fn.cursor(crow, #cursor_indentation + 1)
 end
 
-local function split_existing_end_node(indent_node_range, endable_node, end_node_type, shiftcount)
+local function get_end_node(endable_node, end_node_type)
     if endable_node == nil then
-        return false
+        return nil
     end
 
     local end_node = endable_node:child(endable_node:child_count() - 1)
     if end_node == nil or end_node:type() ~= end_node_type or end_node:missing() then
+        return nil
+    end
+
+    return end_node
+end
+
+local function split_existing_end_node(indent_node_range, endable_node, end_node_type, shiftcount)
+    local end_node = get_end_node(endable_node, end_node_type)
+    if end_node == nil then
         return false
     end
 
@@ -151,6 +165,83 @@ local function split_existing_end_node(indent_node_range, endable_node, end_node
     vim.fn.cursor(crow, #cursor_indentation + 1)
 
     return true
+end
+
+local function remove_inline_end_node(endable_node, end_node_type)
+    local end_node = get_end_node(endable_node, end_node_type)
+    if end_node == nil then
+        return false
+    end
+
+    local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+    local end_node_range = { end_node:range() }
+    if
+        end_node_range[1] ~= crow - 1
+        or end_node_range[3] ~= crow - 1
+        or end_node_range[2] < ccol
+    then
+        return false
+    end
+
+    local line = vim.fn.getline(crow)
+    local text_before_end = string.sub(line, ccol + 1, end_node_range[2])
+    if not string.match(text_before_end, "^%s*$") then
+        return false
+    end
+
+    vim.fn.setline(crow, string.sub(line, 1, ccol) .. string.sub(line, end_node_range[4] + 1, -1))
+    vim.fn.cursor(crow, ccol + 1)
+
+    return true
+end
+
+local function collapse_empty_end_node(indent_node_range, endable_node, end_node_type)
+    local end_node = get_end_node(endable_node, end_node_type)
+    if end_node == nil then
+        return false
+    end
+
+    local crow = unpack(vim.api.nvim_win_get_cursor(0))
+    local current_row = crow - 1
+    local opener_row = indent_node_range[1]
+    local end_node_range = { end_node:range() }
+    if
+        current_row ~= opener_row + 1
+        or end_node_range[1] ~= current_row + 1
+        or end_node_range[3] ~= end_node_range[1]
+    then
+        return false
+    end
+
+    local current_line = vim.fn.getline(crow)
+    if not string.match(current_line, "^%s*$") then
+        return false
+    end
+
+    local end_line = vim.fn.getline(end_node_range[1] + 1)
+    local before_end = string.sub(end_line, 1, end_node_range[2])
+    local _, text_before_end = strip_leading_whitespace(before_end)
+    if text_before_end ~= "" then
+        return false
+    end
+
+    local opener_line = string.gsub(vim.fn.getline(opener_row + 1), "%s+$", "")
+    local end_text = string.sub(end_line, end_node_range[2] + 1, -1)
+    vim.api.nvim_buf_set_lines(
+        0,
+        opener_row,
+        end_node_range[1] + 1,
+        false,
+        { opener_line .. "  " .. end_text }
+    )
+    vim.fn.cursor(opener_row + 1, #opener_line + 2)
+
+    return true
+end
+
+local function handle_backspace(indent_node_range, endable_node, end_node_type)
+    return remove_inline_end_node(endable_node, end_node_type)
+        or collapse_empty_end_node(indent_node_range, endable_node, end_node_type)
 end
 
 local function endwise(bufnr, key)
@@ -217,7 +308,11 @@ local function endwise(bufnr, key)
         local cursor_node_range = { cursor_node:range() }
         if point_in_range(row, col, cursor_node_range) then
             local end_node_type = metadata.endwise_end_node_type or metadata.endwise_end_text
-            if not endable_node or lacks_end(endable_node, end_node_type) then
+            if is_backspace_key(key) then
+                if handle_backspace(indent_node_range, endable_node, end_node_type) then
+                    return
+                end
+            elseif not endable_node or lacks_end(endable_node, end_node_type) then
                 local end_text = metadata.endwise_end_text
                 if metadata.endwise_end_suffix then
                     local suffix = text_for_range({ metadata.endwise_end_suffix:range() })
@@ -267,7 +362,7 @@ vim.treesitter.query.add_directive("endwise!", function(match, _, _, predicate, 
 end, opts)
 
 vim.on_key(function(key)
-    if key ~= "\r" and key ~= " " then
+    if key ~= "\r" and key ~= " " and not is_backspace_key(key) then
         return
     end
     if vim.api.nvim_get_mode().mode ~= "i" then

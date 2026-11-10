@@ -43,6 +43,17 @@ function ExecuteSpace(n)
     end)
 end
 
+function ExecuteBS(n)
+    vim.schedule(function()
+        vim.defer_fn(function() vim.cmd('cquit 1') end, 5000)
+        vim.api.nvim_create_autocmd('User', {
+            pattern = 'PostNvimTreesitterEndwiseCR',
+            command = 'silent wq',
+        })
+        feedkeys(string.rep('l', n)..'a<BS>')
+    end)
+end
+
 function ExecuteCRTwiceAndUndo(n)
     local call_count = 0
     local post_endwise_cb = function()
