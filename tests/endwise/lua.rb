@@ -174,6 +174,34 @@ test "lua, end node with different indentation picked up on same line", <<~END
 +  print('hello') end)
 END
 
+test "lua, inline existing end after cursor", <<~END
+-foo(function()█end)
++foo(function()
++#{'  '}
++end)
+END
+
+test "lua, inline existing end after cursor with leading space", <<~END
+-foo(function() █end)
++foo(function()
++#{'  '}
++end)
+END
+
+test "lua, inline existing end after cursor with surrounding spaces", <<~END
+-foo(function() █ end)
++foo(function()
++#{'  '}
++end)
+END
+
+test "lua, inline existing end after cursor with extra whitespace", <<~END
+-foo(function() █  end)
++foo(function()
++#{'  '}
++end)
+END
+
 test "lua, trailing text that belongs to parent", <<~END
 -foo(vim.schedule_wrap(function()█))
 +foo(vim.schedule_wrap(function()
